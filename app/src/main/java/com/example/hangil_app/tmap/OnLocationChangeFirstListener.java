@@ -1,4 +1,4 @@
-package com.example.hangil_app.api;
+package com.example.hangil_app.tmap;
 
 import com.skt.tmap.TMapPoint;
 

@@ -1,24 +1,26 @@
 package com.example.hangil_app.wifi;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+
 import com.example.hangil_app.system.Hangil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WifiHelper {
-    private WifiManager wifiManager;
-    private List<String> scanResults = new ArrayList<>();
-    private BroadcastReceiver wifiScanReceiver;
-    private WifiManager.ScanResultsCallback scanResultsCallback;
+    private final WifiManager wifiManager;
     private final Context context;
+
 
     public WifiHelper(Context context) {
         this.context = context;
@@ -28,25 +30,25 @@ public class WifiHelper {
     }
 
     public void scanWifi() {
-        Log.d(Hangil.WIFI, "wifi 스캔 중!!");
-        if (!wifiManager.isWifiEnabled()) {
-            Log.e(Hangil.WIFI, "wifi 꺼져있다");
-            return;
-        }
+        if (!wifiManager.isWifiEnabled()) throw new RuntimeException("Wifi is Disabled");
         boolean success = wifiManager.startScan();
         if (!success) {
-            Log.e(Hangil.WIFI, "wifi 스캔 실패요");
+            Log.e(Hangil.WIFI, "Scanning wifi is failed");
         }
     }
 
     private void scanSuccess() {
-        Log.d(Hangil.WIFI, "스캔 성공~~");
+        if (!checkForLocationPermission()) throw new RuntimeException("Cannot request permissions");
+        List<ScanResult> scanResults = wifiManager.getScanResults();
+        for (ScanResult scanResult : scanResults) {
+            Log.d(Hangil.WIFI, scanResult.BSSID + " " + scanResult.SSID);
+        }
     }
 
     private void setupWifiScan() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Android 11 이상
-            scanResultsCallback = new WifiManager.ScanResultsCallback() {
+            WifiManager.ScanResultsCallback scanResultsCallback = new WifiManager.ScanResultsCallback() {
                 @Override
                 public void onScanResultsAvailable() {
                     // 스캔 성공
@@ -56,7 +58,7 @@ public class WifiHelper {
         } else {
             // Android 10 이하
             IntentFilter intentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-            wifiScanReceiver = new BroadcastReceiver() {
+            BroadcastReceiver wifiScanReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     boolean isSuccess = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED,
@@ -69,5 +71,10 @@ public class WifiHelper {
             };
             context.getApplicationContext().registerReceiver(wifiScanReceiver, intentFilter);
         }
+    }
+
+    private boolean checkForLocationPermission() {
+        return ActivityCompat.checkSelfPermission(context.getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 }
