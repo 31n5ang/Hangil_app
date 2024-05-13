@@ -7,6 +7,7 @@ import android.location.Location;
 import android.widget.FrameLayout;
 
 import com.example.hangil_app.R;
+import com.example.hangil_app.api.OnLocationChangeFirstListener;
 import com.skt.tmap.TMapData;
 import com.skt.tmap.TMapGpsManager;
 import com.skt.tmap.TMapPoint;

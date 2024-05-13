@@ -1,4 +1,4 @@
-package com.example.hangil_app.tmap.api.response;
+package com.example.hangil_app.api.response;
 
 import com.google.gson.annotations.SerializedName;
 

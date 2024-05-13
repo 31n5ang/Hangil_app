@@ -1,6 +1,6 @@
-package com.example.hangil_app.tmap.api;
+package com.example.hangil_app.api;
 
-import com.example.hangil_app.tmap.api.response.Buildings;
+import com.example.hangil_app.api.response.Buildings;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

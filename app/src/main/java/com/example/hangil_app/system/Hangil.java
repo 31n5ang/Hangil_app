@@ -1,8 +1,10 @@
-package com.example.hangil_app;
+package com.example.hangil_app.system;
 
 import android.content.Context;
 
 import androidx.appcompat.app.AlertDialog;
+
+import com.example.hangil_app.R;
 
 public class Hangil {
     /**TMAP App key**/
@@ -13,6 +15,7 @@ public class Hangil {
     public static final String API = "hangil.tag.API";
     public static final String TMAP = "hangil.tag.TMAP";
     public static final String TEST = "hangil.tag.test";
+    public static final String WIFI = "hangil.tag.wifi";
 
 
     public static final String DIALOG_TITLE = "안내";

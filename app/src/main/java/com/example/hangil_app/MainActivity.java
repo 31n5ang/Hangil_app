@@ -9,9 +9,11 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hangil_app.tmap.DataManager;
+import com.example.hangil_app.api.DataManager;
+import com.example.hangil_app.system.Hangil;
 import com.example.hangil_app.tmap.TMap;
-import com.example.hangil_app.tmap.api.response.Building;
+import com.example.hangil_app.api.response.Building;
+import com.example.hangil_app.wifi.WifiHelper;
 import com.skt.tmap.TMapPoint;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
         tMap = TMap.getInstance(this, container, Hangil.APPKEY);
         dataManager = DataManager.getInstance(Hangil.API_URL);
+
+        //test
+        WifiHelper wifiHelper = new WifiHelper(this);
+        wifiHelper.scanWifi();
 
 
         // 티맵이 준비 되면

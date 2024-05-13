@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hangil_app.system.Hangil;
 import com.example.hangil_app.search.OnClickStartGuideButton;
 import com.example.hangil_app.search.OnStartGuideCallback;
 import com.example.hangil_app.search.SearchRoomAdapter;

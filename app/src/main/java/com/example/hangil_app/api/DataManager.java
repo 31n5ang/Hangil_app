@@ -1,11 +1,10 @@
-package com.example.hangil_app.tmap;
+package com.example.hangil_app.api;
 
 import android.util.Log;
 
-import com.example.hangil_app.Hangil;
-import com.example.hangil_app.tmap.api.RetrofitService;
-import com.example.hangil_app.tmap.api.response.Building;
-import com.example.hangil_app.tmap.api.response.Buildings;
+import com.example.hangil_app.system.Hangil;
+import com.example.hangil_app.api.response.Building;
+import com.example.hangil_app.api.response.Buildings;
 
 import java.util.ArrayList;
 import java.util.List;
