@@ -1,0 +1,67 @@
+package com.example.hangil_app.tmap;
+
+import android.util.Log;
+
+import com.example.hangil_app.Hangil;
+import com.example.hangil_app.tmap.api.RetrofitService;
+import com.example.hangil_app.tmap.api.response.Building;
+import com.example.hangil_app.tmap.api.response.Buildings;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class DataManager {
+    public static DataManager dataManager; // Singleton
+    private final Retrofit retrofit;
+    private final RetrofitService retrofitService;
+
+    private List<Building> buildings = new ArrayList<>();
+    private DataManager(String baseUrl) {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        retrofitService = retrofit.create(RetrofitService.class);
+    }
+
+    public static synchronized DataManager getInstance(String baseUrl) {
+        if (dataManager == null) {
+            return dataManager = new DataManager(baseUrl);
+        } else {
+            return dataManager;
+        }
+    }
+
+    public void requestGetBuildings(OnBuildingsReadyListener callback) {
+        if (!buildings.isEmpty()) {
+            callback.onBuildingsReady(buildings);
+        } else {
+            Call<Buildings> call = retrofitService.getBuildings();
+            call.enqueue(new Callback<Buildings>() {
+                @Override
+                public void onResponse(Call<Buildings> call, Response<Buildings> response) {
+                    if (response.isSuccessful()) {
+                        buildings = response.body().getBuildings();
+                        callback.onBuildingsReady(buildings);
+                    } else {
+                        Log.e(Hangil.API, response.errorBody().toString());
+                        callback.onBuildingsReady(buildings);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Buildings> call, Throwable t) {
+                    Log.e(Hangil.API, t.toString());
+                    callback.onBuildingsReady(buildings);
+                }
+            });
+        }
+    }
+}
