@@ -2,7 +2,6 @@ package com.example.hangil_app.api;
 
 import android.util.Log;
 
-import com.example.hangil_app.NodeType;
 import com.example.hangil_app.api.response.Building;
 import com.example.hangil_app.api.response.Buildings;
 import com.example.hangil_app.api.response.Node;
@@ -10,7 +9,9 @@ import com.example.hangil_app.api.response.Nodes;
 import com.example.hangil_app.system.Hangil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,9 +23,9 @@ public class DataManager {
     public static DataManager dataManager; // Singleton
     private final Retrofit retrofit;
     private final RetrofitService retrofitService;
-
     private List<Building> buildings = new ArrayList<>();
     private List<Node> nodes = new ArrayList<>();
+    public final Map<Integer, Building> buildingByIdMap = new HashMap<>();
     private DataManager(String baseUrl) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -42,7 +43,8 @@ public class DataManager {
         }
     }
 
-    public void requestGetNodes(int buildingId, NodeType nodeType, OnNodesReadyListener callback) {
+    public void requestGetNodes(int buildingId, NodeType nodeType,
+                                OnNodesReadyListener callback) {
         if (!nodes.isEmpty()) {
             callback.onNodesReady(nodes);
         } else {
@@ -78,6 +80,9 @@ public class DataManager {
                 public void onResponse(Call<Buildings> call, Response<Buildings> response) {
                     if (response.isSuccessful()) {
                         buildings = response.body().getBuildings();
+                        for (Building building : buildings) {
+                            buildingByIdMap.put(building.getId(), building);
+                        }
                         callback.onBuildingsReady(buildings);
                     } else {
                         Log.e(Hangil.API, response.errorBody().toString());

@@ -9,9 +9,10 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hangil_app.api.BuildingId;
 import com.example.hangil_app.api.DataManager;
+import com.example.hangil_app.api.NodeType;
 import com.example.hangil_app.api.response.Building;
-import com.example.hangil_app.api.response.Node;
 import com.example.hangil_app.system.Hangil;
 import com.example.hangil_app.tmap.TMap;
 import com.example.hangil_app.wifi.WifiHelper;
@@ -41,12 +42,6 @@ public class MainActivity extends AppCompatActivity {
         tMap = TMap.getInstance(this, container, Hangil.APPKEY);
         dataManager = DataManager.getInstance(Hangil.API_URL);
 
-        dataManager.requestGetNodes(1, NodeType.ROOM, (nodes -> {
-            for (Node node : nodes) {
-                Log.d(Hangil.API, node.getName() + " " + node.getDescription());
-            }
-        }));
-
         // 티맵이 준비 되면
         tMap.setOnMapReadyListener(() -> {
             tMap.setZoomLevel(17);
@@ -58,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
             // 건물 정보 Rest API 불러온 후 마커 생성
             dataManager.requestGetBuildings((buildings) -> {
+                // 노드도 미리 받아오기
+                dataManager.requestGetNodes(BuildingId.GONG2, NodeType.ROOM, nodes -> {});
                 for (Building building : buildings) {
                     int id = building.getId();
                     String name = building.getName();
@@ -86,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
                 Hangil.suggestGuideDialog(
                         this,
                         String.format(
-                            "%s안에 %s(으)로 안내를 시작 할까요?",
-                            selectedSearchRoomData.getRoomName(),
-                            selectedSearchRoomData.getRoomDetail()
+                            "%s안에 %s 안내를 시작 할까요?",
+                            selectedSearchRoomData.getRoomDetail(),
+                            selectedSearchRoomData.getRoomName()
                         ),
                         () -> {
                             // 긍정
