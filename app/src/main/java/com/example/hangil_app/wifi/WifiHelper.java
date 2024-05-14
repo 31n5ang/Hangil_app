@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
@@ -15,11 +15,10 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.hangil_app.system.Hangil;
 
-import java.util.List;
-
 public class WifiHelper {
     private final WifiManager wifiManager;
     private final Context context;
+    private OnWifiScanSuccessListener onWifiScanSuccessListener;
 
 
     public WifiHelper(Context context) {
@@ -29,7 +28,14 @@ public class WifiHelper {
         setupWifiScan();
     }
 
-    public void scanWifi() {
+    public void testScan() {
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        Log.d(Hangil.WIFI, wifiInfo.getSSID() + " " + wifiInfo.getRssi());
+    }
+
+    public void scanWifi(OnWifiScanSuccessListener onWifiScanSuccessListener) {
+        Log.d(Hangil.WIFI, "스캔 중..");
+        this.onWifiScanSuccessListener = onWifiScanSuccessListener;
         if (!wifiManager.isWifiEnabled()) throw new RuntimeException("Wifi is Disabled");
         boolean success = wifiManager.startScan();
         if (!success) {
@@ -39,10 +45,7 @@ public class WifiHelper {
 
     private void scanSuccess() {
         if (!checkForLocationPermission()) throw new RuntimeException("Cannot request permissions");
-        List<ScanResult> scanResults = wifiManager.getScanResults();
-        for (ScanResult scanResult : scanResults) {
-            Log.d(Hangil.WIFI, scanResult.BSSID + " " + scanResult.SSID);
-        }
+        onWifiScanSuccessListener.onSuccess(wifiManager.getScanResults());
     }
 
     private void setupWifiScan() {

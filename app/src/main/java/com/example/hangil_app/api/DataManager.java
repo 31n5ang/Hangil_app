@@ -2,9 +2,12 @@ package com.example.hangil_app.api;
 
 import android.util.Log;
 
-import com.example.hangil_app.system.Hangil;
+import com.example.hangil_app.NodeType;
 import com.example.hangil_app.api.response.Building;
 import com.example.hangil_app.api.response.Buildings;
+import com.example.hangil_app.api.response.Node;
+import com.example.hangil_app.api.response.Nodes;
+import com.example.hangil_app.system.Hangil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,7 @@ public class DataManager {
     private final RetrofitService retrofitService;
 
     private List<Building> buildings = new ArrayList<>();
+    private List<Node> nodes = new ArrayList<>();
     private DataManager(String baseUrl) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -35,6 +39,32 @@ public class DataManager {
             return dataManager = new DataManager(baseUrl);
         } else {
             return dataManager;
+        }
+    }
+
+    public void requestGetNodes(int buildingId, NodeType nodeType, OnNodesReadyListener callback) {
+        if (!nodes.isEmpty()) {
+            callback.onNodesReady(nodes);
+        } else {
+            Call<Nodes> call = retrofitService.getNodes(buildingId, nodeType.name());
+            call.enqueue(new Callback<Nodes>() {
+                @Override
+                public void onResponse(Call<Nodes> call, Response<Nodes> response) {
+                    if (response.isSuccessful()) {
+                        nodes = response.body().getNodes();
+                        callback.onNodesReady(nodes);
+                    } else {
+                        Log.e(Hangil.API, response.errorBody().toString());
+                        callback.onNodesReady(nodes);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Nodes> call, Throwable t) {
+                    Log.e(Hangil.API, t.toString());
+                    callback.onNodesReady(nodes);
+                }
+            });
         }
     }
 

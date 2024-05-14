@@ -8,9 +8,12 @@ import com.example.hangil_app.R;
 
 public class Hangil {
     /**TMAP App key**/
-    public static final String APPKEY = "Ndc3c4Kz0i7Cu5TBb93hF35hivbzqERV5N7XhOiy";
-    /**API Server URL**/
-    public static final String API_URL = "http://~/api/";
+    public static final String APPKEY = Key.TMAP_APP_KEY;
+    /**
+     * API BASE URL
+     * 형식 : http://example.com/api/
+     */
+    public static final String API_URL = Key.API_URL;
     public static final String SEARCH = "hangil.proto.search";
     public static final String API = "hangil.tag.API";
     public static final String TMAP = "hangil.tag.TMAP";

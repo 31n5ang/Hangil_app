@@ -10,9 +10,10 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.hangil_app.api.DataManager;
+import com.example.hangil_app.api.response.Building;
+import com.example.hangil_app.api.response.Node;
 import com.example.hangil_app.system.Hangil;
 import com.example.hangil_app.tmap.TMap;
-import com.example.hangil_app.api.response.Building;
 import com.example.hangil_app.wifi.WifiHelper;
 import com.skt.tmap.TMapPoint;
 
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView currLocBtn;
 
+    private WifiHelper wifiHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +41,11 @@ public class MainActivity extends AppCompatActivity {
         tMap = TMap.getInstance(this, container, Hangil.APPKEY);
         dataManager = DataManager.getInstance(Hangil.API_URL);
 
-        //test
-        WifiHelper wifiHelper = new WifiHelper(this);
-        wifiHelper.scanWifi();
-
+        dataManager.requestGetNodes(1, NodeType.ROOM, (nodes -> {
+            for (Node node : nodes) {
+                Log.d(Hangil.API, node.getName() + " " + node.getDescription());
+            }
+        }));
 
         // 티맵이 준비 되면
         tMap.setOnMapReadyListener(() -> {
@@ -97,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                 );
             });
-
         });
     }
 }
