@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
@@ -26,11 +25,6 @@ public class WifiHelper {
         this.wifiManager =
                 (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         setupWifiScan();
-    }
-
-    public void testScan() {
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        Log.d(Hangil.WIFI, wifiInfo.getSSID() + " " + wifiInfo.getRssi());
     }
 
     public void scanWifi(OnWifiScanSuccessListener onWifiScanSuccessListener) {
