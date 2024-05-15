@@ -1,7 +1,7 @@
-package com.example.hangil_app.api;
+package com.example.hangil_app.data.api;
 
-import com.example.hangil_app.api.response.Buildings;
-import com.example.hangil_app.api.response.Nodes;
+import com.example.hangil_app.data.api.response.Buildings;
+import com.example.hangil_app.data.api.response.Nodes;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

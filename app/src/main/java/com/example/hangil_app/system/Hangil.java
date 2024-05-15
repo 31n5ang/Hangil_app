@@ -1,6 +1,7 @@
 package com.example.hangil_app.system;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -14,14 +15,16 @@ public class Hangil {
      * 형식 : http://example.com/api/
      */
     public static final String API_URL = Key.API_URL;
-    public static final String SEARCH = "hangil.proto.search";
+
+    public static final String SEARCH = "hangil.protocol.search";
+    public static final String START_NODE = "hangil.protocol.start";
+    public static final String END_NODE = "hangil.protocol.end";
+    public static final String BUILDING_ID = "hangil.protocol.building";
+
     public static final String API = "hangil.tag.API";
     public static final String TMAP = "hangil.tag.TMAP";
     public static final String TEST = "hangil.tag.test";
     public static final String WIFI = "hangil.tag.wifi";
-
-    public static final int MIN_BUILDING_INDEX = 1;
-    public static final int BUILDING_COUNT = 1;
 
     public static final String DIALOG_TITLE = "안내";
     public static final String DIALOG_POSITIVE_TEXT = "좋아요";
@@ -39,12 +42,20 @@ public class Hangil {
                 .setIcon(R.drawable.hangil_logo)
                 .setMessage(message)
                 .setPositiveButton(Hangil.DIALOG_POSITIVE_TEXT, ((dialog, which) -> {
-                    onPositiveClickListener.run();
+                    if (onPositiveClickListener != null) onPositiveClickListener.run();
                 }))
                 .setNegativeButton(Hangil.DIALOG_NEGATIVE_TEXT, (((dialog, which) -> {
-                    onNegativeClickListener.run();
+                    if (onNegativeClickListener != null) onNegativeClickListener.run();
                 })))
                 .create()
                 .show();
+    }
+
+    public static void showToastShort(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT);
+    }
+
+    public static void showToastLong(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 }

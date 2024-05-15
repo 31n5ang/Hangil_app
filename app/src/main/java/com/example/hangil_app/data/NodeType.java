@@ -1,4 +1,4 @@
-package com.example.hangil_app.api;
+package com.example.hangil_app.data;
 
 public enum NodeType {
     ENTRANCE,

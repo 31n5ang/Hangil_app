@@ -17,7 +17,9 @@ import com.skt.tmap.overlay.TMapPolyLine;
 import lombok.Setter;
 
 public class TMap {
+    public static final int INIT_ZOOM_LEVEL = 17;
     public static final int ME = 0;
+    public static final int ENTRANCE = 100;
     private static final String PATH = "path";
     private static final int PATH_COLOR = 0x2285B0;
     private static final int PATH_OUTLINE_COLOR = 0x1C7094;
@@ -31,7 +33,6 @@ public class TMap {
     @Setter
     private TMapView.OnLongClickListenerCallBack onLongClickListenerCallBack;
     public boolean isLocationChanged = false;
-
     public boolean isGuideMode = false;
 
     private TMap(Context context, FrameLayout container, String appKey) {
@@ -155,18 +156,26 @@ public class TMap {
         );
     }
 
-    public void drawPolyLine(String id, TMapPolyLine tMapPolyLine) {
+    public void drawPathPolyLine(TMapPolyLine tMapPolyLine) {
         tMapPolyLine.setID(PATH);
         tMapPolyLine.setLineColor(PATH_COLOR);
         tMapPolyLine.setOutLineColor(PATH_OUTLINE_COLOR);
         tMapView.addTMapPolyLine(tMapPolyLine);
     }
 
-    public void removePolyLine(TMapPolyLine tMapPolyLine) {
+    public void erasePolyLine() {
         tMapView.removeTMapPolyLine(PATH);
     }
 
     public TMapPoint getLocationPoint() {
         return tMapView.getLocationPoint();
+    }
+
+    public boolean isEntraceMarker(TMapMarkerItem tMapMarkerItem) {
+        return Integer.parseInt(tMapMarkerItem.getId()) >= ENTRANCE;
+    }
+
+    public boolean isBuildingMarker(TMapMarkerItem tMapMarkerItem) {
+        return Integer.parseInt(tMapMarkerItem.getId()) >= 1;
     }
 }

@@ -1,11 +1,12 @@
-package com.example.hangil_app.api;
+package com.example.hangil_app.data;
 
 import android.util.Log;
 
-import com.example.hangil_app.api.response.Building;
-import com.example.hangil_app.api.response.Buildings;
-import com.example.hangil_app.api.response.Node;
-import com.example.hangil_app.api.response.Nodes;
+import com.example.hangil_app.data.api.RetrofitService;
+import com.example.hangil_app.data.api.response.Building;
+import com.example.hangil_app.data.api.response.Buildings;
+import com.example.hangil_app.data.api.response.Node;
+import com.example.hangil_app.data.api.response.Nodes;
 import com.example.hangil_app.system.Hangil;
 
 import java.util.ArrayList;
@@ -20,12 +21,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DataManager {
+    public static final int MIN_BUILDING_INDEX = 1;
+    public static final int BUILDING_COUNT = 1;
     public static DataManager dataManager; // Singleton
     private final Retrofit retrofit;
     private final RetrofitService retrofitService;
     private List<Building> buildings = new ArrayList<>();
     private List<Node> nodes = new ArrayList<>();
-    public final Map<Integer, Building> buildingByIdMap = new HashMap<>();
+    public static final Map<Integer, Building> buildingByIdMap = new HashMap<>();
     private DataManager(String baseUrl) {
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)

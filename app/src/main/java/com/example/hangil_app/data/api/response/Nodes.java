@@ -1,4 +1,4 @@
-package com.example.hangil_app.api.response;
+package com.example.hangil_app.data.api.response;
 
 import java.util.List;
 

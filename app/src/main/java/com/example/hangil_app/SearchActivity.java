@@ -1,7 +1,7 @@
 package com.example.hangil_app;
 
-import static com.example.hangil_app.system.Hangil.BUILDING_COUNT;
-import static com.example.hangil_app.system.Hangil.MIN_BUILDING_INDEX;
+import static com.example.hangil_app.data.DataManager.BUILDING_COUNT;
+import static com.example.hangil_app.data.DataManager.MIN_BUILDING_INDEX;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hangil_app.api.DataManager;
-import com.example.hangil_app.api.NodeType;
-import com.example.hangil_app.api.response.Node;
+import com.example.hangil_app.data.DataManager;
+import com.example.hangil_app.data.NodeType;
+import com.example.hangil_app.data.api.response.Node;
 import com.example.hangil_app.search.OnClickStartGuideButton;
 import com.example.hangil_app.search.OnStartGuideCallback;
 import com.example.hangil_app.search.SearchRoomAdapter;
@@ -58,7 +58,7 @@ public class SearchActivity extends AppCompatActivity {
                                     node.getId(),
                                     buildingId,
                                     node.getName(),
-                                    dataManager.buildingByIdMap.get(buildingId).getName()
+                                    DataManager.buildingByIdMap.get(buildingId).getName()
                             )
                     );
                 }
