@@ -2,7 +2,6 @@ package com.example.hangil_app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -41,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         tMap = TMap.getInstance(this, container, Hangil.APPKEY);
         dataManager = DataManager.getInstance(Hangil.API_URL);
+        wifiHelper = new WifiHelper(this);
 
         // 티맵이 준비 되면
         tMap.setOnMapReadyListener(() -> {
@@ -72,12 +72,29 @@ public class MainActivity extends AppCompatActivity {
 
             // 검색버튼을 누르게 되면
             destInputGo.setOnClickListener((event) -> {
-                Intent intent = new Intent(this, SearchActivity.class);
-                intent.putExtra(Hangil.SEARCH, destInput.getText().toString());
-                startActivity(intent);
+                if (tMap.isGuideMode) {
+                    // 안내 중이라면
+                    suggestOffGuideDialog();
+                } else {
+                    // SearchActivity로 이동
+                    Intent intent = new Intent(this, SearchActivity.class);
+                    intent.putExtra(Hangil.SEARCH, destInput.getText().toString());
+                    startActivity(intent);
+                }
             });
 
-            // TODO 이렇게 직접 SearchActivity의 멤버 인터페이스 메소드에 조작하는 것이 과연 올바를까..?
+            // 검색인풋을 누르게 되면
+            destInput.setOnClickListener((event) -> {
+                if (tMap.isGuideMode) {
+                    // 안내 중이라면
+                    suggestOffGuideDialog();
+                } else {
+
+                }
+            });
+
+
+
             // SearchActivity의 목록에서 '안내'버튼을 누르게 되면 호출
             SearchActivity.setOnStartGuideCallback((selectedSearchRoomData) -> {
                 Hangil.suggestGuideDialog(
@@ -89,15 +106,57 @@ public class MainActivity extends AppCompatActivity {
                         ),
                         () -> {
                             // 긍정
-                            Log.d(Hangil.TEST, "긍정");
+                            //TODO 경로 그리기
+                            //TODO 공학2관 입구 마커 찍기
+                            //TODO 입구 클릭 시 내부 지도로 전환하냐고 물음
+                            //TODO 입구 노드 -> 도착 노드 GET
+                            //TODO 내부 지도로 전환
+                            //TODO 층마다 경로 정보 저장
+                            //TODO 와이파이 스캔 -> 현재 위치에 따라 지도에 표시
+
+                            // 검색창 비활성화 및 티맵 안내모드 활성화
+                            setEnableDestInput(false);
+                            destInput.setText(String.format("%s %s",
+                                    selectedSearchRoomData.getRoomDetail(),
+                                    selectedSearchRoomData.getRoomName()));
+                            tMap.onGuideMode();
                         },
                         () -> {
                             // 부정
-                            Log.d(Hangil.TEST, "부정");
                         }
                 );
+
+
+
+
             });
         });
+    }
+
+    private void setEnableDestInput(boolean isEnable) {
+        if (isEnable) {
+            destInput.setFocusableInTouchMode(true);
+        } else {
+            destInput.setFocusable(false);
+        }
+        destInput.setClickable(isEnable);
+        destInput.setText("");
+    }
+
+    private void suggestOffGuideDialog() {
+        Hangil.suggestGuideDialog(
+                this,
+                String.format("안내를 종료하고 목적지를 다시 설정할까요?"),
+                () -> {
+                    // 긍정
+                    // 티맵 가이드모드 종료 및 검색창 활성화
+                    tMap.offGuideMode();
+                    setEnableDestInput(true);
+                },
+                () -> {
+                    // 부정
+                }
+        );
     }
 }
 

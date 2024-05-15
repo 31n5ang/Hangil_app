@@ -132,15 +132,15 @@ public class TMap {
         changeMeMarker(tMapPoint);
     }
 
-    public void startGuideMode() {
-        if (isGuideMode) endGuideMode();
+    public void onGuideMode() {
+        if (isGuideMode) offGuideMode();
         isGuideMode = true;
         tMapView.setTrackingMode(true);
         tMapView.setCompassMode(true);
         tMapView.setIconVisibility(false);
     }
 
-    public void endGuideMode() {
+    public void offGuideMode() {
         isGuideMode = false;
         tMapView.setTrackingMode(false);
         tMapView.setCompassMode(false);
