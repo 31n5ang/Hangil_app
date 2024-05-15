@@ -1,7 +1,9 @@
 package com.example.hangil_app;
 
+import static com.example.hangil_app.system.Hangil.BUILDING_COUNT;
+import static com.example.hangil_app.system.Hangil.MIN_BUILDING_INDEX;
+
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,11 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hangil_app.api.DataManager;
 import com.example.hangil_app.api.NodeType;
 import com.example.hangil_app.api.response.Node;
-import com.example.hangil_app.system.Hangil;
 import com.example.hangil_app.search.OnClickStartGuideButton;
 import com.example.hangil_app.search.OnStartGuideCallback;
 import com.example.hangil_app.search.SearchRoomAdapter;
 import com.example.hangil_app.search.SearchRoomData;
+import com.example.hangil_app.system.Hangil;
 import com.example.hangil_app.tmap.TMap;
 
 import java.util.ArrayList;
@@ -47,23 +49,28 @@ public class SearchActivity extends AppCompatActivity {
         searchRoomAdapter = new SearchRoomAdapter(startGuideButtonClick());
 
         // searchRoomDataList을 ROOM 노드로 채워넣기
-        dataManager.requestGetNodes(1, NodeType.ROOM, (nodes -> {
-            List<SearchRoomData> searchRoomDataList = new ArrayList<>();
-            for (Node node : nodes) {
-                searchRoomDataList.add(new SearchRoomData(
-                        node.getId(),
-                        node.getName(),
-                        dataManager.buildingByIdMap.get(1).getName()
-                    )
-                );
-                Log.d(Hangil.API, dataManager.buildingByIdMap.get(1).getName());
-            }
-            searchTextView.setText(search);
-            countTextView.setText(String.format("%d건의 검색결과가 존재합니다.", searchRoomAdapter.getItemCount()));
-            searchRV.setAdapter(searchRoomAdapter);
-            searchRV.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-            searchRoomAdapter.setSearchRoomDatas(searchRoomDataList);
-        }));
+        List<SearchRoomData> searchRoomDataList = new ArrayList<>();
+        for (int i = MIN_BUILDING_INDEX; i < (MIN_BUILDING_INDEX + BUILDING_COUNT); i++) {
+            final int buildingId = i;
+            dataManager.requestGetNodes(buildingId, NodeType.ROOM, (nodes -> {
+                for (Node node : nodes) {
+                    searchRoomDataList.add(new SearchRoomData(
+                                    node.getId(),
+                                    buildingId,
+                                    node.getName(),
+                                    dataManager.buildingByIdMap.get(buildingId).getName()
+                            )
+                    );
+                }
+                // 불러오면 즉각 리스트 반영.
+                // 모두 request 후 한 번만 반영하는 방법도 있겠지만..
+                searchRV.setAdapter(searchRoomAdapter);
+                searchRV.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+                searchRoomAdapter.setSearchRoomDatas(searchRoomDataList);
+                searchTextView.setText(search);
+                countTextView.setText(String.format("%d건의 검색결과가 존재합니다.", searchRoomAdapter.getItemCount()));
+            }));
+        }
     }
 
     private OnClickStartGuideButton startGuideButtonClick() {

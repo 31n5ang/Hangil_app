@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class SearchRoomData {
     int nodeId;
+    int buildingId;
     String roomName;
     String roomDetail;
 }
