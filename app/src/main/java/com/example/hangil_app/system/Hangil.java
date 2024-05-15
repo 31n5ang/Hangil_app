@@ -20,6 +20,8 @@ public class Hangil {
     public static final String TEST = "hangil.tag.test";
     public static final String WIFI = "hangil.tag.wifi";
 
+    public static final int MIN_BUILDING_INDEX = 1;
+    public static final int BUILDING_COUNT = 1;
 
     public static final String DIALOG_TITLE = "안내";
     public static final String DIALOG_POSITIVE_TEXT = "좋아요";
