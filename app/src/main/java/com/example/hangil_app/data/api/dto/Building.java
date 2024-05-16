@@ -1,4 +1,4 @@
-package com.example.hangil_app.data.api.response;
+package com.example.hangil_app.data.api.dto;
 
 import com.google.gson.annotations.SerializedName;
 

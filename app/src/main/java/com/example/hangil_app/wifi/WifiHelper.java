@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import com.example.hangil_app.system.Hangil;
 
 public class WifiHelper {
+    // TODO 싱글톤으로 바꾸자
     private final WifiManager wifiManager;
     private final Context context;
     private OnWifiScanSuccessListener onWifiScanSuccessListener;

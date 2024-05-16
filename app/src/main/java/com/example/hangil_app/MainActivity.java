@@ -23,11 +23,10 @@ import com.example.hangil_app.data.BuildingInfo;
 import com.example.hangil_app.data.DataManager;
 import com.example.hangil_app.data.Entrance;
 import com.example.hangil_app.data.NodeType;
-import com.example.hangil_app.data.api.response.Building;
+import com.example.hangil_app.data.api.dto.Building;
 import com.example.hangil_app.search.SearchRoomData;
 import com.example.hangil_app.system.Hangil;
 import com.example.hangil_app.tmap.TMap;
-import com.example.hangil_app.wifi.WifiHelper;
 import com.skt.tmap.TMapPoint;
 import com.skt.tmap.TMapView;
 import com.skt.tmap.overlay.TMapMarkerItem;
@@ -44,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
 
     private ImageView currLocBtn;
 
-    private WifiHelper wifiHelper;
-
     private int currGuideBuildingId = BuildingInfo.NONE.id;
     private int currGuideNodeId = -1;
 
@@ -61,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
 
         tMap = TMap.getInstance(this, container, Hangil.APPKEY);
         dataManager = DataManager.getInstance(Hangil.API_URL);
-        wifiHelper = new WifiHelper(this);
 
         // 티맵이 준비 되면
         tMap.setOnMapReadyListener(() -> {
@@ -136,6 +132,8 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
                         null
                 );
             });
+
+            // test
         });
     }
     private void addMarkerEntrance(int buildingId) {
@@ -294,6 +292,5 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
                           TMapPoint tMapPoint, PointF pointF) {
 
     }
-
 }
 

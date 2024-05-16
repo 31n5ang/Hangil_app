@@ -1,13 +1,16 @@
 package com.example.hangil_app.data;
 
+import static com.example.hangil_app.system.Hangil.API;
+
 import android.util.Log;
 
 import com.example.hangil_app.data.api.RetrofitService;
-import com.example.hangil_app.data.api.response.Building;
-import com.example.hangil_app.data.api.response.Buildings;
-import com.example.hangil_app.data.api.response.Node;
-import com.example.hangil_app.data.api.response.Nodes;
-import com.example.hangil_app.system.Hangil;
+import com.example.hangil_app.data.api.dto.Building;
+import com.example.hangil_app.data.api.dto.BuildingSignals;
+import com.example.hangil_app.data.api.dto.Buildings;
+import com.example.hangil_app.data.api.dto.Node;
+import com.example.hangil_app.data.api.dto.Nodes;
+import com.example.hangil_app.data.api.dto.Position;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,14 +62,14 @@ public class DataManager {
                         nodes = response.body().getNodes();
                         callback.onNodesReady(nodes);
                     } else {
-                        Log.e(Hangil.API, response.errorBody().toString());
+                        Log.e(API, response.errorBody().toString());
                         callback.onNodesReady(nodes);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Nodes> call, Throwable t) {
-                    Log.e(Hangil.API, t.toString());
+                    Log.e(API, t.toString());
                     callback.onNodesReady(nodes);
                 }
             });
@@ -88,17 +91,37 @@ public class DataManager {
                         }
                         callback.onBuildingsReady(buildings);
                     } else {
-                        Log.e(Hangil.API, response.errorBody().toString());
+                        Log.e(API, response.errorBody().toString());
                         callback.onBuildingsReady(buildings);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Buildings> call, Throwable t) {
-                    Log.e(Hangil.API, t.toString());
+                    Log.e(API, t.toString());
                     callback.onBuildingsReady(buildings);
                 }
             });
         }
+    }
+
+    public void requestGetPosition(BuildingSignals buildingSignals,
+                                   OnPositionReadyListener callback) {
+        Call<Position> call = retrofitService.getPosition(buildingSignals);
+        call.enqueue(new Callback<Position>() {
+            @Override
+            public void onResponse(Call<Position> call, Response<Position> response) {
+                if (response.isSuccessful()) {
+                    callback.onPositionReady(response.body());
+                } else {
+                    Log.e(API, response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Position> call, Throwable t) {
+                Log.e(API, t.toString());
+            }
+        });
     }
 }
