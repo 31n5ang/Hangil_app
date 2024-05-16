@@ -1,5 +1,7 @@
 package com.example.hangil_app.wifi;
 
+import static com.example.hangil_app.system.Hangil.WIFI;
+
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,8 +13,6 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
-
-import com.example.hangil_app.system.Hangil;
 
 public class WifiHelper {
     private static WifiHelper wifiHelper;
@@ -37,12 +37,12 @@ public class WifiHelper {
     }
 
     public void scanWifi(OnWifiScanSuccessListener onWifiScanSuccessListener) {
-        Log.d(Hangil.WIFI, "스캔 중..");
+        Log.d(WIFI, "스캔 중..");
         this.onWifiScanSuccessListener = onWifiScanSuccessListener;
         if (!wifiManager.isWifiEnabled()) throw new RuntimeException("Wifi is Disabled");
         boolean success = wifiManager.startScan();
         if (!success) {
-            Log.e(Hangil.WIFI, "Scanning wifi is failed");
+            Log.e(WIFI, "Scanning wifi is failed");
         }
     }
 
