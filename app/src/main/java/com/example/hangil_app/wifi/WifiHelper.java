@@ -15,13 +15,21 @@ import androidx.core.app.ActivityCompat;
 import com.example.hangil_app.system.Hangil;
 
 public class WifiHelper {
-    // TODO 싱글톤으로 바꾸자
+    private static WifiHelper wifiHelper;
     private final WifiManager wifiManager;
     private final Context context;
     private OnWifiScanSuccessListener onWifiScanSuccessListener;
 
+    public static WifiHelper getInstance(Context context) {
+        if (wifiHelper == null) {
+            return wifiHelper = new WifiHelper(context);
+        } else {
+            return wifiHelper;
+        }
+    }
 
-    public WifiHelper(Context context) {
+
+    private WifiHelper(Context context) {
         this.context = context;
         this.wifiManager =
                 (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);

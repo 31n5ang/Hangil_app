@@ -45,7 +45,7 @@ public class IndoorActivity extends AppCompatActivity {
         Button f4 = findViewById(R.id.f4Btn);
 
         //
-        wifiHelper = new WifiHelper(this);
+        wifiHelper = WifiHelper.getInstance(this);
         isIndoorGuideMode = true;
         startRequestGetPositionLoop();
     }
