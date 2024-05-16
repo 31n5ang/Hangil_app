@@ -34,6 +34,7 @@ public class TMap {
     private TMapView.OnLongClickListenerCallBack onLongClickListenerCallBack;
     public boolean isLocationChanged = false;
     public boolean isGuideMode = false;
+    public boolean isTmapReady = false;
 
     private TMap(Context context, FrameLayout container, String appKey) {
         this.context = context;
@@ -71,7 +72,7 @@ public class TMap {
         return tMapMarkerItem;
     }
 
-    public TMapMarkerItem addMarker(int id, Bitmap icon, TMapPoint point, String callOut, String subCallOut) {
+    public void addMarker(int id, Bitmap icon, TMapPoint point, String callOut, String subCallOut) {
         TMapMarkerItem tMapMarkerItem = createMarker(id, point);
         if (callOut != null) {
             tMapMarkerItem.setCalloutTitle(callOut);
@@ -82,7 +83,6 @@ public class TMap {
         if (icon != null) tMapMarkerItem.setIcon(icon);
         if (id == 0) tMapMarkerItem.setPosition(0.5F, 0.5F);
         tMapView.addTMapMarkerItem(tMapMarkerItem);
-        return tMapMarkerItem;
     }
 
 
@@ -113,6 +113,7 @@ public class TMap {
         addMarker(ME, icon, point, null, null);
     }
     public void onLocationChange(Location location) {
+        if (!isTmapReady) return;
         if (!isLocationChanged) {
             // 처음 변했다면
             isLocationChanged = true;
@@ -157,6 +158,7 @@ public class TMap {
     }
 
     public void drawPathPolyLine(TMapPolyLine tMapPolyLine) {
+        if (tMapPolyLine == null) return;
         tMapPolyLine.setID(PATH);
         tMapPolyLine.setLineColor(PATH_COLOR);
         tMapPolyLine.setOutLineColor(PATH_OUTLINE_COLOR);

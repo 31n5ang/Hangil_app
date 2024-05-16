@@ -59,15 +59,17 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
         tMap = TMap.getInstance(this, container, Hangil.APPKEY);
         dataManager = DataManager.getInstance(Hangil.API_URL);
 
-        // 티맵이 준비 되면
+        // 처음으로 받아오는 위치로 티맵 화면 조정
+        tMap.setOnLocationChangeFirstListener((firstPoint) -> {
+            tMap.setCenter(firstPoint.getLatitude(), firstPoint.getLongitude(), true);
+        });
+
+        // 티맵 지도가 준비 되면
         tMap.setOnMapReadyListener(() -> {
+            tMap.isTmapReady = true;
+
             // 줌 레벨 설정
             tMap.setZoomLevel(INIT_ZOOM_LEVEL);
-
-            // 처음으로 받아오는 위치로 티맵 화면 조정
-            tMap.setOnLocationChangeFirstListener((firstPoint) -> {
-                tMap.setCenter(firstPoint.getLatitude(), firstPoint.getLongitude(), true);
-            });
 
             // 노드 정보 미리 받아오기
             for (int buildingId = MIN_BUILDING_INDEX; buildingId < (MIN_BUILDING_INDEX + BUILDING_COUNT); buildingId++) {

@@ -8,6 +8,7 @@ import com.example.hangil_app.data.api.RetrofitService;
 import com.example.hangil_app.data.api.dto.Building;
 import com.example.hangil_app.data.api.dto.BuildingSignals;
 import com.example.hangil_app.data.api.dto.Buildings;
+import com.example.hangil_app.data.api.dto.IndoorPath;
 import com.example.hangil_app.data.api.dto.Node;
 import com.example.hangil_app.data.api.dto.Nodes;
 import com.example.hangil_app.data.api.dto.Position;
@@ -120,6 +121,26 @@ public class DataManager {
 
             @Override
             public void onFailure(Call<Position> call, Throwable t) {
+                Log.e(API, t.toString());
+            }
+        });
+    }
+
+    public void requestGetIndoorPath(int buildingId, int startNodeId, int endNodeId,
+                                     OnIndoorPathReadyListener callback) {
+        Call<IndoorPath> call = retrofitService.getIndoorPath(buildingId, startNodeId, endNodeId);
+        call.enqueue(new Callback<IndoorPath>() {
+            @Override
+            public void onResponse(Call<IndoorPath> call, Response<IndoorPath> response) {
+                if (response.isSuccessful()) {
+                    callback.onIndoorPathReady(response.body());
+                } else {
+                    Log.e(API, response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IndoorPath> call, Throwable t) {
                 Log.e(API, t.toString());
             }
         });
