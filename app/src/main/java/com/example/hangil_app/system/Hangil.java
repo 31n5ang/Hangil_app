@@ -17,8 +17,16 @@ public class Hangil {
     public static final String API_URL = Key.API_URL;
 
     public static final String SEARCH = "hangil.protocol.search";
-    public static final String START_NODE = "hangil.protocol.start";
-    public static final String END_NODE = "hangil.protocol.end";
+    public static final String START_NODE_FLOOR = "hangil.protocol.start.node.floor";
+    public static final String START_NODE_NUMBER = "hangil.protocol.start.node.number";
+    public static final String START_NODE_ID = "hangil.protocol.start.node.id";
+    public static final String START_NODE_NAME = "hangil.protocol.start.node.name";
+
+    public static final String END_NODE_FLOOR = "hangil.protocol.end.node.floor";
+    public static final String END_NODE_NUMBER = "hangil.protocol.end.node.number";
+    public static final String END_NODE_ID = "hangil.protocol.end.node.id";
+    public static final String END_NODE_NAME = "hangil.protocol.end.node.name";
+
     public static final String BUILDING_ID = "hangil.protocol.building";
 
     public static final String API = "hangil.tag.API";

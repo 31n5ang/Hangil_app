@@ -12,4 +12,51 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ImageView
+        android:id="@+id/destInputBg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/input_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/destInputGo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/blue_marker_circle"
+        app:layout_constraintBottom_toBottomOf="@+id/destInputBg"
+        app:layout_constraintEnd_toEndOf="@+id/destInputBg"
+        app:layout_constraintTop_toTopOf="@+id/destInputBg" />
+
+    <EditText
+        android:id="@+id/destInput"
+        android:layout_width="235dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:background="@null"
+        android:ems="8"
+        android:hint="어디로 갈까요? ex) 학술정보팀"
+        android:inputType="text"
+        android:singleLine="true"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/destInputBg"
+        app:layout_constraintEnd_toEndOf="@+id/destInputBg"
+        app:layout_constraintStart_toStartOf="@+id/destInputBg"
+        app:layout_constraintTop_toTopOf="@+id/destInputBg" />
+
+    <ImageView
+        android:id="@+id/currLocBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

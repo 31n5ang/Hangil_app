@@ -5,6 +5,7 @@ import com.example.hangil_app.data.api.dto.Buildings;
 import com.example.hangil_app.data.api.dto.IndoorPath;
 import com.example.hangil_app.data.api.dto.Nodes;
 import com.example.hangil_app.data.api.dto.Position;
+import com.example.hangil_app.data.api.dto.StartEndNode;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -27,10 +28,8 @@ public interface RetrofitService {
             @Body BuildingSignals buildingSignals
     );
 
-    @GET("v1/building/path/{buildingId}/{startNodeId}/{endNodeId}")
+    @POST("v1/building/path")
     Call<IndoorPath> getIndoorPath(
-            @Path("buildingId") int buildingId,
-            @Path("startNodeId") int startNodeId,
-            @Path("endNodeId") int endNodeId
+            @Body StartEndNode startEndNode
     );
 }

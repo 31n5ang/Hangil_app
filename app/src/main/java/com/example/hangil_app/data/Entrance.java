@@ -9,5 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class Entrance {
     private int nodeId;
+    private int number;
     private TMapPoint tMapPoint;
 }

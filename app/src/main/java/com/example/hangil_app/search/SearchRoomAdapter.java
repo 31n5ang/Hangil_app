@@ -34,13 +34,13 @@ public class SearchRoomAdapter extends RecyclerView.Adapter<SearchRoomAdapter.Re
         public RecyclerViewHolder(@NonNull View view) {
             super(view);
             roomName = view.findViewById(R.id.roomName);
-            roomDetail = view.findViewById(R.id.roomDetail);
+            roomDetail = view.findViewById(R.id.buildingName);
             startGuideBtn = view.findViewById(R.id.startGuideBtn);
         }
 
         void onBind(SearchRoomData searchRoomData) {
-            roomName.setText(searchRoomData.getRoomName());
-            roomDetail.setText(searchRoomData.getRoomDetail());
+            roomName.setText(searchRoomData.getNode().getName());
+            roomDetail.setText(searchRoomData.getBuildingName());
 
         }
     }

@@ -55,9 +55,8 @@ public class SearchActivity extends AppCompatActivity {
             dataManager.requestGetNodes(buildingId, NodeType.ROOM, (nodes -> {
                 for (Node node : nodes) {
                     searchRoomDataList.add(new SearchRoomData(
-                                    node.getId(),
+                                    node,
                                     buildingId,
-                                    node.getName(),
                                     DataManager.buildingByIdMap.get(buildingId).getName()
                             )
                     );

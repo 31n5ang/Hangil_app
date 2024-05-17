@@ -20,14 +20,16 @@ import androidx.annotation.Nullable;
 import com.example.hangil_app.R;
 
 public class IndoorMapView extends View {
-    public static Bitmap background;
+    public static Bitmap background = null;
+    private Bitmap endMarker;
     private Bitmap me;
     private GestureDetector gestureDetector;
     private Scroller scroller;
-    private float offsetX = 0;
-    private float offsetY = 0;
+    public static float offsetX = 0;
+    public static float offsetY = 0;
     private Paint paint;
     public static Coord meCoord;
+    public static Coord endMarkerCoord;
 
     public IndoorMapView(Context context) {
         super(context);
@@ -45,8 +47,8 @@ public class IndoorMapView extends View {
     }
 
     private void init(Context context) {
-        background = BitmapFactory.decodeResource(getResources(), R.drawable.gong2_1_120);
         me = BitmapFactory.decodeResource(getResources(), R.drawable.me);
+        endMarker = BitmapFactory.decodeResource(getResources(), R.drawable.blue_marker);
         gestureDetector = new GestureDetector(context, new GestureListener());
         scroller = new Scroller(context);
         paint = new Paint();
@@ -57,18 +59,22 @@ public class IndoorMapView extends View {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (background != null) {
-            canvas.save();
-            canvas.translate(-offsetX, -offsetY);
-            drawContent(canvas);
-            canvas.restore();
-        }
+        canvas.save();
+        canvas.translate(-offsetX, -offsetY);
+        drawContent(canvas);
+        canvas.restore();
     }
 
     private void drawContent(Canvas canvas) {
-        canvas.drawBitmap(background, 0, 0, null);
-        canvas.drawBitmap(me, meCoord.getX() - (float) me.getWidth() / 2,
+        if (background != null) {
+            canvas.drawBitmap(background, 0, 0, null);
+        }
+        if (me != null ) canvas.drawBitmap(me, meCoord.getX() - (float) me.getWidth() / 2,
                 meCoord.getY() - (float) me.getHeight() / 2, null);
+        if (endMarkerCoord != null) {
+            canvas.drawBitmap(endMarker, endMarkerCoord.getX() - (float) endMarker.getWidth() / 2,
+                    endMarkerCoord.getY() - (float) endMarker.getHeight() / 2, null);
+        }
     }
 
 
@@ -84,7 +90,7 @@ public class IndoorMapView extends View {
 
     @Override
     public void computeScroll() {
-        if (scroller.computeScrollOffset()) {
+        if (background != null && scroller.computeScrollOffset()) {
             offsetX = scroller.getCurrX();
             offsetY = scroller.getCurrY();
             invalidate();
@@ -94,12 +100,14 @@ public class IndoorMapView extends View {
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            offsetX += distanceX;
-            offsetY += distanceY;
+            if (background != null) {
+                offsetX += distanceX;
+                offsetY += distanceY;
 
-            // Bound checking
-            offsetX = Math.max(0, Math.min(offsetX, background.getWidth() - getWidth()));
-            offsetY = Math.max(0, Math.min(offsetY, background.getHeight() - getHeight()));
+                // Bound checking
+                offsetX = Math.max(0, Math.min(offsetX, background.getWidth() - getWidth()));
+                offsetY = Math.max(0, Math.min(offsetY, background.getHeight() - getHeight()));
+            }
 
             invalidate();
             return true;
@@ -107,16 +115,11 @@ public class IndoorMapView extends View {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            scroller.fling((int) offsetX, (int) offsetY, (int) -velocityX, (int) -velocityY,
-                    0, background.getWidth() - getWidth(), 0, background.getHeight() - getHeight());
+            if (background != null) {
+                scroller.fling((int) offsetX, (int) offsetY, (int) -velocityX, (int) -velocityY,
+                        0, background.getWidth() - getWidth(), 0, background.getHeight() - getHeight());
+            }
             return true;
         }
-    }
-
-    public void changeBackground(Bitmap background) {
-        this.background = background;
-        offsetX = 0;
-        offsetY = 0;
-        invalidate();
     }
 }

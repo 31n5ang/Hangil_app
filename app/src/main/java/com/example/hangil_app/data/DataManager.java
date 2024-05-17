@@ -12,6 +12,7 @@ import com.example.hangil_app.data.api.dto.IndoorPath;
 import com.example.hangil_app.data.api.dto.Node;
 import com.example.hangil_app.data.api.dto.Nodes;
 import com.example.hangil_app.data.api.dto.Position;
+import com.example.hangil_app.data.api.dto.StartEndNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,9 +127,9 @@ public class DataManager {
         });
     }
 
-    public void requestGetIndoorPath(int buildingId, int startNodeId, int endNodeId,
+    public void requestGetIndoorPath(StartEndNode startEndNode,
                                      OnIndoorPathReadyListener callback) {
-        Call<IndoorPath> call = retrofitService.getIndoorPath(buildingId, startNodeId, endNodeId);
+        Call<IndoorPath> call = retrofitService.getIndoorPath(startEndNode);
         call.enqueue(new Callback<IndoorPath>() {
             @Override
             public void onResponse(Call<IndoorPath> call, Response<IndoorPath> response) {

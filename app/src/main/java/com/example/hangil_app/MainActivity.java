@@ -3,8 +3,13 @@ package com.example.hangil_app;
 import static com.example.hangil_app.data.DataManager.BUILDING_COUNT;
 import static com.example.hangil_app.data.DataManager.MIN_BUILDING_INDEX;
 import static com.example.hangil_app.system.Hangil.BUILDING_ID;
-import static com.example.hangil_app.system.Hangil.END_NODE;
-import static com.example.hangil_app.system.Hangil.START_NODE;
+import static com.example.hangil_app.system.Hangil.END_NODE_FLOOR;
+import static com.example.hangil_app.system.Hangil.END_NODE_ID;
+import static com.example.hangil_app.system.Hangil.END_NODE_NAME;
+import static com.example.hangil_app.system.Hangil.END_NODE_NUMBER;
+import static com.example.hangil_app.system.Hangil.START_NODE_FLOOR;
+import static com.example.hangil_app.system.Hangil.START_NODE_ID;
+import static com.example.hangil_app.system.Hangil.START_NODE_NUMBER;
 import static com.example.hangil_app.tmap.TMap.ENTRANCE;
 import static com.example.hangil_app.tmap.TMap.INIT_ZOOM_LEVEL;
 
@@ -42,10 +47,7 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
     private ImageView destInputGo;
 
     private ImageView currLocBtn;
-
-    private int currGuideBuildingId = BuildingInfo.NONE.id;
-    private int currGuideNodeId = -1;
-
+    private SearchRoomData currGuideRoomData = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,9 +125,9 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
                         String.format(
                             "%s안에 %s 안내를 시작 할까요?",
                             // 건물 이름
-                            selectedSearchRoomData.getRoomDetail(),
+                            selectedSearchRoomData.getBuildingName(),
                             // 호실
-                            selectedSearchRoomData.getRoomName()
+                            selectedSearchRoomData.getNode()
                         ),
                         () -> {
                             // 긍정
@@ -210,28 +212,26 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
         setEnableDestInput(true);
 
         // 티맵 입구 마커 삭제
-        removeMarkerEntrace(currGuideBuildingId);
+        removeMarkerEntrace(currGuideRoomData.getBuildingId());
 
         // 경로 삭제
         erasePathBuilding();
 
         // 안내 중인 건물 없음으로 설정
-        currGuideBuildingId = BuildingInfo.NONE.id;
-        currGuideNodeId = -1;
+        currGuideRoomData = null;
     }
 
     private void onGuideSetting(SearchRoomData selectedSearchRoomData) {
-        // 현재 안내중인 건물 설정
-        currGuideBuildingId = selectedSearchRoomData.getBuildingId();
-        currGuideNodeId = selectedSearchRoomData.getNodeId();
+        // 현재 안내중인 노드 설정
+        currGuideRoomData = selectedSearchRoomData;
 
         // 검색창 비활성화 및 티맵 안내모드 활성화
         setEnableDestInput(false);
 
         // 검색창 바꾸기
         destInput.setText(String.format("%s %s",
-                selectedSearchRoomData.getRoomDetail(),
-                selectedSearchRoomData.getRoomName()));
+                selectedSearchRoomData.getBuildingName(),
+                selectedSearchRoomData.getNode().getName()));
 
         // 티맵 안내 모드 시작
         tMap.onGuideMode();
@@ -240,10 +240,10 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
         Hangil.showToastLong(this, "안내를 종료하려면 검색창을 터치하세요!");
 
         // 입구 마커 생성
-        addMarkerEntrance(currGuideBuildingId);
+        addMarkerEntrance(currGuideRoomData.getBuildingId());
 
         // 경로 생성
-        drawPathBuilding(currGuideBuildingId);
+        drawPathBuilding(currGuideRoomData.getBuildingId());
     }
 
     @Override
@@ -271,10 +271,23 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
                                         // 현재 안내 종료
                                         Intent intent = new Intent(this, IndoorActivity.class);
 
-                                        // 실내 지도 Activity에 건물 번호, 출발 노드, 도착 노드 전달
-                                        intent.putExtra(BUILDING_ID, currGuideBuildingId);
-                                        intent.putExtra(START_NODE, entrance.getNodeId());
-                                        intent.putExtra(END_NODE, currGuideNodeId);
+                                        // 실내 지도 Activity에 건물 번호 전달
+                                        intent.putExtra(BUILDING_ID, currGuideRoomData.getBuildingId());
+
+                                        // 출발 노드 전달
+                                        intent.putExtra(START_NODE_FLOOR, 1);
+                                        intent.putExtra(START_NODE_NUMBER, entrance.getNumber());
+                                        intent.putExtra(START_NODE_ID, entrance.getNodeId());
+
+                                        // 도착 노드 전달
+                                        intent.putExtra(END_NODE_FLOOR,
+                                                currGuideRoomData.getNode().getFloor());
+                                        intent.putExtra(END_NODE_NUMBER,
+                                                currGuideRoomData.getNode().getNumber());
+                                        intent.putExtra(END_NODE_ID,
+                                                currGuideRoomData.getNode().getId());
+                                        intent.putExtra(END_NODE_NAME,
+                                                currGuideRoomData.getNode().getName());
                                         startActivity(intent);
 
                                         // 안내 종료
