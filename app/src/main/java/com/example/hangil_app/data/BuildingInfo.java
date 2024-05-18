@@ -577,6 +577,42 @@ public enum BuildingInfo {
                         put(80, new Coord(3325, 850));
                         put(82, new Coord(3135, 862));
                         put(81, new Coord(3465, 854));
+                        put(500, new Coord(993, 2072));
+                        put(501, new Coord(1048, 2068));
+                        put(502, new Coord(1104, 2128));
+                        put(503, new Coord(1099, 2354));
+                        put(504, new Coord(1104, 2410));
+                        put(505, new Coord(1099, 2567));
+                        put(506, new Coord(1099, 2724));
+                        put(507, new Coord(1099, 2899));
+                        put(508, new Coord(1164, 3057));
+                        put(509, new Coord(1307, 3057));
+                        put(510, new Coord(1567, 3056));
+                        put(511, new Coord(1710, 3056));
+                        put(512, new Coord(1923, 3056));
+                        put(513, new Coord(2090, 3056));
+                        put(514, new Coord(2183, 3140));
+                        put(515, new Coord(2294, 3062));
+                        put(516, new Coord(2511, 3057));
+                        put(517, new Coord(3374, 2022));
+                        put(518, new Coord(2747, 3052));
+                        put(519, new Coord(2909, 3048));
+                        put(520, new Coord(3175, 3052));
+                        put(521, new Coord(3268, 2877));
+                        put(522, new Coord(3268, 2632));
+                        put(523, new Coord(3272, 2392));
+                        put(524, new Coord(3384, 2156));
+                        put(525, new Coord(3384, 2078));
+                        put(526, new Coord(3369, 1869));
+                        put(527, new Coord(3369, 1745));
+                        put(528, new Coord(3364, 1620));
+                        put(529, new Coord(3364, 1514));
+                        put(530, new Coord(3364, 1374));
+                        put(531, new Coord(3369, 1255));
+                        put(532, new Coord(3370, 1134));
+                        put(533, new Coord(3365, 1014));
+                        put(534, new Coord(3476, 1818));
+                        put(535, new Coord(3717, 1828));
                     }}
             }
     );
@@ -591,6 +627,15 @@ public enum BuildingInfo {
         this.entrances = entrances;
         this.floorCount = floorCount;
         this.coordByNumber = coordByNumber;
+    }
+
+    public static BuildingInfo findBuildingInfo(int buildingId) {
+        for (BuildingInfo buildingInfo : BuildingInfo.values()) {
+            if (buildingInfo.id == buildingId) {
+                return buildingInfo;
+            }
+        }
+        return BuildingInfo.NONE;
     }
 }
 

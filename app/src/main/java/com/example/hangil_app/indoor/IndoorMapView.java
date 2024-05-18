@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -19,17 +20,33 @@ import androidx.annotation.Nullable;
 
 import com.example.hangil_app.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
 public class IndoorMapView extends View {
-    public static Bitmap background = null;
-    private Bitmap endMarker;
-    private Bitmap me;
+    @Setter
+    private static Bitmap background;
+    private static Bitmap endMarker;
+    private static Bitmap me;
     private GestureDetector gestureDetector;
     private Scroller scroller;
+    @Setter
     public static float offsetX = 0;
+    @Setter
     public static float offsetY = 0;
     private Paint paint;
-    public static Coord meCoord;
-    public static Coord endMarkerCoord;
+    @Getter
+    @Setter
+    private static Coord meCoord;
+    @Getter
+    @Setter
+    private static Coord endMarkerCoord;
+    @Getter
+    @Setter
+    private static List<Coord> path = new ArrayList<>();
 
     public IndoorMapView(Context context) {
         super(context);
@@ -49,10 +66,14 @@ public class IndoorMapView extends View {
     private void init(Context context) {
         me = BitmapFactory.decodeResource(getResources(), R.drawable.me);
         endMarker = BitmapFactory.decodeResource(getResources(), R.drawable.blue_marker);
+
         gestureDetector = new GestureDetector(context, new GestureListener());
+
         scroller = new Scroller(context);
+
         paint = new Paint();
         paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(10f);
     }
 
@@ -69,12 +90,22 @@ public class IndoorMapView extends View {
         if (background != null) {
             canvas.drawBitmap(background, 0, 0, null);
         }
-        if (me != null ) canvas.drawBitmap(me, meCoord.getX() - (float) me.getWidth() / 2,
+        if (!path.isEmpty()) {
+            Path indoorPath = new Path();
+            indoorPath.moveTo(path.get(0).getX(), path.get(0).getY());
+            for (Coord coord : path) {
+                indoorPath.lineTo(coord.getX(), coord.getY());
+            }
+            canvas.drawPath(indoorPath, paint);
+        }
+        if (meCoord != null ) canvas.drawBitmap(me, meCoord.getX() - (float) me.getWidth() / 2,
                 meCoord.getY() - (float) me.getHeight() / 2, null);
         if (endMarkerCoord != null) {
+            // 노드 위에 찍기
             canvas.drawBitmap(endMarker, endMarkerCoord.getX() - (float) endMarker.getWidth() / 2,
-                    endMarkerCoord.getY() - (float) endMarker.getHeight() / 2, null);
+                    endMarkerCoord.getY() - (float) endMarker.getHeight(), null);
         }
+
     }
 
 
@@ -105,8 +136,8 @@ public class IndoorMapView extends View {
                 offsetY += distanceY;
 
                 // Bound checking
-                offsetX = Math.max(0, Math.min(offsetX, background.getWidth() - getWidth()));
-                offsetY = Math.max(0, Math.min(offsetY, background.getHeight() - getHeight()));
+                offsetX = Math.max(0, Math.min(offsetX, background.getWidth() - (float) getWidth() / 2));
+                offsetY = Math.max(0, Math.min(offsetY, background.getHeight() - (float) getHeight() / 2));
             }
 
             invalidate();

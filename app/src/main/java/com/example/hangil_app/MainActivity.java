@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
                             // 건물 이름
                             selectedSearchRoomData.getBuildingName(),
                             // 호실
-                            selectedSearchRoomData.getNode()
+                            selectedSearchRoomData.getNode().getName()
                         ),
                         () -> {
                             // 긍정
@@ -249,54 +249,58 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
     @Override
     public void onPressDown(ArrayList<TMapMarkerItem> tMapMarkerItems, ArrayList<TMapPOIItem> poiItems,
                             TMapPoint tMapPoint, PointF pointF) {
-        if (tMapMarkerItems.isEmpty()) return;
-        else {
-            TMapMarkerItem selectedTmapMarkerItem = tMapMarkerItems.get(0);
-            if (tMap.isEntraceMarker(selectedTmapMarkerItem)) {
-                // 입구 마커라면
-                int add = 0;
-                // 터치한 입구 마커
-                int selectedMarkerId = Integer.parseInt(selectedTmapMarkerItem.getId());
-                for (BuildingInfo buildingInfo : BuildingInfo.values()) {
-                    for (Entrance entrance : buildingInfo.entrances) {
-                        // 터치한 입구 마커 비교
-                        int markerId = ENTRANCE + add;
-                        if (markerId == selectedMarkerId)
-                            // 내부 지도 안내로 전환 제안
-                            Hangil.suggestGuideDialog(
-                                    this,
-                                    "선택한 입구를 출발지로 실내 지도로 전환할까요?",
-                                    () -> {
-                                        // 긍정
-                                        // 현재 안내 종료
-                                        Intent intent = new Intent(this, IndoorActivity.class);
+        if (tMapMarkerItems.isEmpty()) {
+            // 터치한 마커가 없다면
+            return;
+        } else {
+            for (TMapMarkerItem selectedTmapMarkerItem : tMapMarkerItems) {
+                if (tMap.isEntraceMarker(selectedTmapMarkerItem)) {
+                    // 입구 마커라면
+                    int add = 0;
+                    // 터치한 입구 마커
+                    int selectedMarkerId = Integer.parseInt(selectedTmapMarkerItem.getId());
+                    for (BuildingInfo buildingInfo : BuildingInfo.values()) {
+                        for (Entrance entrance : buildingInfo.entrances) {
+                            // 터치한 입구 마커 비교
+                            int markerId = ENTRANCE + add;
+                            if (markerId == selectedMarkerId)
+                                // 내부 지도 안내로 전환 제안
+                                Hangil.suggestGuideDialog(
+                                        this,
+                                        "선택한 입구를 출발지로 실내 지도로 전환할까요?",
+                                        () -> {
+                                            // 긍정
+                                            // 현재 안내 종료
+                                            Intent intent = new Intent(this, IndoorActivity.class);
 
-                                        // 실내 지도 Activity에 건물 번호 전달
-                                        intent.putExtra(BUILDING_ID, currGuideRoomData.getBuildingId());
+                                            // 실내 지도 Activity에 건물 번호 전달
+                                            intent.putExtra(BUILDING_ID, currGuideRoomData.getBuildingId());
 
-                                        // 출발 노드 전달
-                                        intent.putExtra(START_NODE_FLOOR, 1);
-                                        intent.putExtra(START_NODE_NUMBER, entrance.getNumber());
-                                        intent.putExtra(START_NODE_ID, entrance.getNodeId());
+                                            // 출발 노드 전달
+                                            intent.putExtra(START_NODE_FLOOR, 1);
+                                            intent.putExtra(START_NODE_NUMBER, entrance.getNumber());
+                                            intent.putExtra(START_NODE_ID, entrance.getNodeId());
 
-                                        // 도착 노드 전달
-                                        intent.putExtra(END_NODE_FLOOR,
-                                                currGuideRoomData.getNode().getFloor());
-                                        intent.putExtra(END_NODE_NUMBER,
-                                                currGuideRoomData.getNode().getNumber());
-                                        intent.putExtra(END_NODE_ID,
-                                                currGuideRoomData.getNode().getId());
-                                        intent.putExtra(END_NODE_NAME,
-                                                currGuideRoomData.getNode().getName());
-                                        startActivity(intent);
+                                            // 도착 노드 전달
+                                            intent.putExtra(END_NODE_FLOOR,
+                                                    currGuideRoomData.getNode().getFloor());
+                                            intent.putExtra(END_NODE_NUMBER,
+                                                    currGuideRoomData.getNode().getNumber());
+                                            intent.putExtra(END_NODE_ID,
+                                                    currGuideRoomData.getNode().getId());
+                                            intent.putExtra(END_NODE_NAME,
+                                                    currGuideRoomData.getNode().getName());
+                                            startActivity(intent);
 
-                                        // 안내 종료
-                                        offGuideSetting();
-                                    },
-                                    null
-                            );
-                        ++add;
+                                            // 안내 종료
+                                            offGuideSetting();
+                                        },
+                                        null
+                                );
+                            ++add;
+                        }
                     }
+                    return;
                 }
             }
         }
