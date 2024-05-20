@@ -1,7 +1,7 @@
 package com.example.hangil_app.tmap;
 
-import static com.example.hangil_app.data.DataManager.BUILDING_COUNT;
-import static com.example.hangil_app.data.DataManager.MIN_BUILDING_INDEX;
+import static com.example.hangil_app.system.Hangil.BUILDING_COUNT;
+import static com.example.hangil_app.system.Hangil.MIN_BUILDING_INDEX;
 
 import android.content.Context;
 import android.graphics.Bitmap;

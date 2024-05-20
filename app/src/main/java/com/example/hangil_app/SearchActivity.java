@@ -1,11 +1,10 @@
 package com.example.hangil_app;
 
-import static com.example.hangil_app.data.DataManager.MIN_BUILDING_INDEX;
+import static com.example.hangil_app.system.Hangil.MIN_BUILDING_INDEX;
 
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -49,7 +48,6 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         //
-        Log.d("minsang","onCreate SearchActivity 진입완료" );
         isStartRoom =
                 getIntent().getStringExtra(Hangil.SEARCH_TYPE).equals(Hangil.SEARCH_TYPE_START);
         isIndoorGuide =

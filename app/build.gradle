@@ -53,4 +53,7 @@ dependencies {
     // Lombok
     compileOnly libs.projectlombok.lombok
     annotationProcessor libs.projectlombok.lombok
+
+    // Loading spin
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 }

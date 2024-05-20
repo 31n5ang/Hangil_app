@@ -1,7 +1,6 @@
 package com.example.hangil_app;
 
-import static com.example.hangil_app.data.DataManager.BUILDING_COUNT;
-import static com.example.hangil_app.data.DataManager.MIN_BUILDING_INDEX;
+import static com.example.hangil_app.system.Hangil.BUILDING_COUNT;
 import static com.example.hangil_app.system.Hangil.BUILDING_ID;
 import static com.example.hangil_app.system.Hangil.END_NODE_FLOOR;
 import static com.example.hangil_app.system.Hangil.END_NODE_ID;
@@ -9,6 +8,7 @@ import static com.example.hangil_app.system.Hangil.END_NODE_NAME;
 import static com.example.hangil_app.system.Hangil.END_NODE_NUMBER;
 import static com.example.hangil_app.system.Hangil.GUIDE_TYPE;
 import static com.example.hangil_app.system.Hangil.INDOOR_GUIDE;
+import static com.example.hangil_app.system.Hangil.MIN_BUILDING_INDEX;
 import static com.example.hangil_app.system.Hangil.SEARCH_TYPE;
 import static com.example.hangil_app.system.Hangil.SEARCH_TYPE_END;
 import static com.example.hangil_app.system.Hangil.SEARCH_TYPE_START;
@@ -17,7 +17,9 @@ import static com.example.hangil_app.system.Hangil.START_NODE_NUMBER;
 import static com.example.hangil_app.system.Hangil.TEST;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -34,6 +36,7 @@ import com.example.hangil_app.indoor.IndoorMapView;
 import com.example.hangil_app.search.OnSelectRoomCallback;
 import com.example.hangil_app.search.SearchRoomData;
 import com.example.hangil_app.system.Hangil;
+import com.example.hangil_app.system.ProgressSpin;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -55,7 +58,8 @@ public class IndoorActivity extends AppCompatActivity {
     private int endNodeId;
     private StartEndNode startEndNode;
     private String endNodeName;
-    // TODO DataManager 쪽으로 별도 분리할 필요가 있어보임
+
+    // TODO 별도 분리할 필요가 있어보임. 콜백? DI? 흠..
     @Getter
     @Setter
     private static SearchRoomData startRoomData;
@@ -64,6 +68,7 @@ public class IndoorActivity extends AppCompatActivity {
     private static SearchRoomData endRoomData;
     @Getter
     private static OnSelectRoomCallback onSelectRoomCallback;
+    private ProgressSpin progressSpin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +80,10 @@ public class IndoorActivity extends AppCompatActivity {
         endInput = findViewById(R.id.indoorEndInput);
         startGuideBtn = findViewById(R.id.indoorStartGuideBtn);
         goOutdoorBtn = findViewById(R.id.goOutdoorBtn);
+        progressSpin = new ProgressSpin(this);
 //        indoorMapView = findViewById(R.id.indoorMapView);
+
+
         LinearLayout container = findViewById(R.id.indoorMapViewContainer);
         indoorMapView = new IndoorMapView(IndoorActivity.this);
         indoorMapView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -83,10 +91,6 @@ public class IndoorActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         container.addView(indoorMapView);
-
-        Log.i(TEST, "IndoorActivity startRoomData: " + startRoomData.getNode().getName());
-        Log.i(TEST, "IndoorActivity startRoomData: " + endRoomData.getNode().getName());
-
 
         //
         String startText = String.format("[%s] %s", startRoomData.getBuildingName(),
@@ -145,13 +149,11 @@ public class IndoorActivity extends AppCompatActivity {
 
         // 출발지 텍스트뷰를 누르게 되면
         startInput.setOnClickListener((event) -> {
-            Log.d(TEST, indoorMap.isIndoorGuideMode() ? "안내 중임" : "안내 중이 아님");
             if (indoorMap.isIndoorGuideMode()) {
                 // 안내 중이라면 종료 안내
                 suggestOffGuideDialog();
             } else {
                 // SearchActivity로 이동
-                Log.d(TEST, "searchActivity로 전달할 내용 " + buildingId);
                 Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
                 intent.putExtra(SEARCH_TYPE, SEARCH_TYPE_START);
                 intent.putExtra(GUIDE_TYPE, INDOOR_GUIDE);
@@ -162,13 +164,11 @@ public class IndoorActivity extends AppCompatActivity {
 
         // 도착지 텍스트뷰를 누르게 되면
         endInput.setOnClickListener((event) -> {
-            Log.d(TEST, indoorMap.isIndoorGuideMode() ? "안내 중임" : "안내 중이 아님");
             if (indoorMap.isIndoorGuideMode()) {
                 // 안내 중이라면 종료 안내
                 suggestOffGuideDialog();
             } else {
                 // SearchActivity로 이동
-                Log.d(TEST, "searchActivity로 전달할 내용 " + buildingId);
                 Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
                 intent.putExtra(SEARCH_TYPE, SEARCH_TYPE_END);
                 intent.putExtra(GUIDE_TYPE, INDOOR_GUIDE);
@@ -182,19 +182,10 @@ public class IndoorActivity extends AppCompatActivity {
             if (startRoomData == null || endRoomData == null) {
                 // 출발지와 목적지를 입력하지 않았다면
                 Hangil.showToastLong(this, "출발지와 도착지를 모두 입력해주세요!");
-                return;
+            } else {
+                // 안내 시작 제안
+                suggestOnGuideDialog();
             }
-
-            StartEndNode newStartEndNode = new StartEndNode(
-                    startRoomData.getBuildingId(),
-                    startRoomData.getNode().getNumber(),
-                    startRoomData.getNode().getFloor(),
-                    endRoomData.getNode().getNumber(),
-                    endRoomData.getNode().getFloor()
-            );
-
-            // 안내 시작
-            onGuideSetting(newStartEndNode);
         });
 
         // SearchActivity의 목록에서 '선택'버튼을 누르게 되면 호출
@@ -223,10 +214,22 @@ public class IndoorActivity extends AppCompatActivity {
     }
 
     private void onGuideSetting(StartEndNode startEndNode) {
+        // 로딩 창 띄우기
+        showProgressSpin();
+        Log.d(TEST, "로딩 시작..");
+
+        // 실내 지도 생성
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getRealSize(size);
         indoorMap = IndoorMap.getInstance(this, indoorMapView, size.x, size.y);
-        indoorMap.startIndoorGuide(startEndNode);
+
+        // 실내 안내 시작
+        indoorMap.startIndoorGuide(startEndNode, () -> {
+            // 와이파이 스캔에 처음으로 성공 했다면
+            // 로딩 창 숨기기
+            hideProgressSpin();
+            Log.d(TEST, "로딩 종료..");
+        });
     }
 
     private void offGuideSetting() {
@@ -277,6 +280,16 @@ public class IndoorActivity extends AppCompatActivity {
                 },
                 null
         );
+    }
+
+    private void showProgressSpin() {
+        progressSpin.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressSpin.setCancelable(false);
+        progressSpin.show();
+    }
+
+    private void hideProgressSpin() {
+        progressSpin.dismiss();
     }
 
     @Override

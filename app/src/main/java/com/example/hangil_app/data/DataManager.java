@@ -28,8 +28,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DataManager {
-    public static final int MIN_BUILDING_INDEX = 1;
-    public static final int BUILDING_COUNT = 37;
     public static DataManager dataManager; // Singleton
     private final Retrofit retrofit;
     private final RetrofitService retrofitService;

@@ -6,10 +6,10 @@ import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.view.View;
 
-import com.example.hangil_app.data.OnPositionGetListener;
 import com.example.hangil_app.data.BuildingBackground;
 import com.example.hangil_app.data.BuildingInfo;
 import com.example.hangil_app.data.DataManager;
+import com.example.hangil_app.data.OnPositionGetListener;
 import com.example.hangil_app.data.api.dto.BuildingSignals;
 import com.example.hangil_app.data.api.dto.IndoorPath;
 import com.example.hangil_app.data.api.dto.PathNode;
@@ -38,6 +38,7 @@ public class IndoorMap {
     @Getter @Setter
     private boolean canWifiScan = false;
     private int lastFloor = NONE;
+    private boolean isWifiScanSuccessFirst = false;
     public static IndoorMap getInstance(Context context, IndoorMapView indoorMapView,
                                         float screenWidth,
                                         float screenHeight) {
@@ -58,11 +59,26 @@ public class IndoorMap {
         BuildingBackground.setContext(context);
         init();
     }
-    public void startIndoorGuide(StartEndNode startEndNode) {
+    public void startIndoorGuide(StartEndNode startEndNode, OnWifiScanSuccessFirstListener onWifiScanSuccessFirstListener) {
+        // 와이파이 스캔 첫 성공 대기상태로 표시
+        isWifiScanSuccessFirst = false;
+
+        // 안내모드 중으로 표시
         isIndoorGuideMode = true;
+
+        // 와이파이 스캔 시작
         canWifiScan = true;
+
+        // 실내 경로 가져오기
         dataManager.requestGetIndoorPath(startEndNode, (indoorPath) -> {
+            // 스캔 후 현재 위치 가져오기
             startRequestGetPositionLoop(startEndNode.getBuildingId(), (position) -> {
+                // 와이파이 첫 스캔이라면 성공으로 표시
+                if (!isWifiScanSuccessFirst) {
+                    isWifiScanSuccessFirst = true;
+                    onWifiScanSuccessFirstListener.onWifiScanSuccess();
+                }
+
                 int currNumber = position.getNumber();
                 int currFloor = position.getFloor();
                 int buildingId = startEndNode.getBuildingId();

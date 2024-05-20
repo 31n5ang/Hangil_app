@@ -13,7 +13,6 @@ import static com.example.hangil_app.system.Hangil.SEARCH_TYPE_START;
 import static com.example.hangil_app.system.Hangil.START_NODE_FLOOR;
 import static com.example.hangil_app.system.Hangil.START_NODE_ID;
 import static com.example.hangil_app.system.Hangil.START_NODE_NUMBER;
-import static com.example.hangil_app.system.Hangil.TEST;
 import static com.example.hangil_app.system.Hangil.suggestGuideDialog;
 import static com.example.hangil_app.tmap.TMap.ENTRANCE;
 import static com.example.hangil_app.tmap.TMap.INIT_ZOOM_LEVEL;
@@ -21,9 +20,10 @@ import static com.example.hangil_app.tmap.TMap.INIT_ZOOM_LEVEL;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PointF;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +38,7 @@ import com.example.hangil_app.data.api.dto.Node;
 import com.example.hangil_app.search.OnSelectRoomCallback;
 import com.example.hangil_app.search.SearchRoomData;
 import com.example.hangil_app.system.Hangil;
+import com.example.hangil_app.system.ProgressSpin;
 import com.example.hangil_app.tmap.TMap;
 import com.skt.tmap.TMapPoint;
 import com.skt.tmap.TMapView;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
     private TextView startInput;
     private ImageView currLocBtn;
     private ImageView startGuideBtn;
+    private ProgressSpin progressSpin;
     @Getter
     @Setter
     private static boolean isStartIsOutdoor = false;
@@ -74,20 +76,31 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
         startGuideBtn = findViewById(R.id.startGuideBtn);
         endInput = findViewById(R.id.endInput);
         currLocBtn = findViewById(R.id.currLocBtn);
+        progressSpin = new ProgressSpin(this);
 
         tMap = TMap.getInstance(this, container, Hangil.APPKEY);
         dataManager = DataManager.getInstance(Hangil.API_URL);
 
+        // 로딩 창 띄우기
+        showProgressSpin();
+
         // 처음으로 받아오는 위치로 티맵 화면 조정
         tMap.setOnLocationChangeFirstListener((firstPoint) -> {
+            // 위치 조정
             tMap.setCenter(firstPoint.getLatitude(), firstPoint.getLongitude(), true);
+
+            // 로딩 창 없애기
+            hideProgressSpin();
         });
 
         // 티맵 지도가 준비 되면
         tMap.setOnMapReadyListener(() -> {
             tMap.isTmapReady = true;
 
-            // 줌 레벨 설정
+            // 기본 위치 세팅 (학교 좌표)
+            tMap.setCenter(36.764035, 127.281957);
+
+            // 기본 줌 레벨 설정
             tMap.setZoomLevel(INIT_ZOOM_LEVEL);
 
             // 건물 정보 Rest API 불러온 후 마커 생성
@@ -206,6 +219,9 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
             });
         });
     }
+
+
+
     private void addMarkerEntrance(int buildingId) {
         Bitmap entranceIcon = BitmapFactory.decodeResource(getResources(),
                 R.drawable.entrance);
@@ -267,8 +283,6 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
                 this,
                 "선택한 입구를 출발지로 하는 실내 지도로 전환할까요?",
                 () -> {
-                    Log.i(TEST, "suggest : startRoomData" + startRoomData.getNode().getName());
-                    Log.i(TEST, "suggest : startRoomData" + endRoomData.getNode().getName());
                     // 긍정
                     // 현재 안내 종료
                     Intent intent = new Intent(getApplicationContext(), IndoorActivity.class);
@@ -336,6 +350,16 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
 
         // 입구 마커 생성
         addMarkerEntrance(endRoomData.getBuildingId());
+    }
+
+    private void showProgressSpin() {
+        progressSpin.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressSpin.setCancelable(false);
+        progressSpin.show();
+    }
+
+    private void hideProgressSpin() {
+        progressSpin.dismiss();
     }
 
     @Override
