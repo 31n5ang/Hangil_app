@@ -19,61 +19,99 @@
     </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/destinationForm"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/indoorDestinationForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/destInputBg"
-            android:layout_width="wrap_content"
+            android:id="@+id/endInputBg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/input_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/startInputBg" />
+
+        <TextView
+            android:id="@+id/endInput"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:background="@null"
+            android:ems="8"
+            android:hint="도착지 선택"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/endInputBg"
+            app:layout_constraintEnd_toEndOf="@+id/endInputBg"
+            app:layout_constraintStart_toStartOf="@+id/endInputBg"
+            app:layout_constraintTop_toTopOf="@+id/endInputBg" />
+
+        <!--출발지-->
+        <ImageView
+            android:id="@+id/startInputBg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:src="@drawable/input_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/destInputGo"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/startInput"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:src="@drawable/blue_marker_circle"
-            app:layout_constraintBottom_toBottomOf="@+id/destInputBg"
-            app:layout_constraintEnd_toEndOf="@+id/destInputBg"
-            app:layout_constraintTop_toTopOf="@+id/destInputBg" />
-
-        <EditText
-            android:id="@+id/destInput"
-            android:layout_width="235dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
             android:background="@null"
             android:ems="8"
-            android:hint="어디로 갈까요? ex) 학술정보팀"
+            android:hint="출발지 선택"
             android:inputType="text"
             android:singleLine="true"
             android:textAlignment="center"
+            android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/destInputBg"
-            app:layout_constraintEnd_toEndOf="@+id/destInputBg"
-            app:layout_constraintStart_toStartOf="@+id/destInputBg"
-            app:layout_constraintTop_toTopOf="@+id/destInputBg" />
+            app:layout_constraintBottom_toBottomOf="@+id/startInputBg"
+            app:layout_constraintEnd_toEndOf="@+id/startInputBg"
+            app:layout_constraintStart_toStartOf="@+id/startInputBg"
+            app:layout_constraintTop_toTopOf="@+id/startInputBg" />
 
         <ImageView
-            android:id="@+id/currLocBtn"
-            android:layout_width="wrap_content"
+            android:id="@+id/startGuideBtn"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_mylocation" />
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/walk_man"
+            app:layout_constraintBottom_toBottomOf="@+id/endInputBg"
+            app:layout_constraintEnd_toEndOf="@+id/endInputBg"
+            app:layout_constraintTop_toTopOf="@+id/endInputBg" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/hangilLogo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="25dp"
+        android:alpha="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/hangil_logo" />
+
+    <ImageView
+        android:id="@+id/currLocBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

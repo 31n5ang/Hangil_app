@@ -17,6 +17,10 @@ public class Hangil {
     public static final String API_URL = Key.API_URL;
 
     public static final String SEARCH = "hangil.protocol.search";
+    public static final String SEARCH_TYPE = "hangil.protocol.search.type";
+    public static final String SEARCH_TYPE_START = "hangil.protocol.search.type.start";
+    public static final String SEARCH_TYPE_END = "hangil.protocol.search.type.end";
+
     public static final String START_NODE_FLOOR = "hangil.protocol.start.node.floor";
     public static final String START_NODE_NUMBER = "hangil.protocol.start.node.number";
     public static final String START_NODE_ID = "hangil.protocol.start.node.id";
@@ -27,7 +31,10 @@ public class Hangil {
     public static final String END_NODE_ID = "hangil.protocol.end.node.id";
     public static final String END_NODE_NAME = "hangil.protocol.end.node.name";
 
-    public static final String BUILDING_ID = "hangil.protocol.building";
+    public static final String BUILDING_ID = "hangil.protocol.building.id";
+    public static final String GUIDE_TYPE = "hangil.protocol.guide.type";
+    public static final String INDOOR_GUIDE = "hangil.protocol.indoor.guide";
+    public static final String OUTDOOR_GUIDE = "hangil.protocol.outdoor.guide";
 
     public static final String API = "hangil.tag.API";
     public static final String TMAP = "hangil.tag.TMAP";

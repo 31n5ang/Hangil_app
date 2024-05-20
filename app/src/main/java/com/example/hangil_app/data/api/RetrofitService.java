@@ -3,8 +3,10 @@ package com.example.hangil_app.data.api;
 import com.example.hangil_app.data.api.dto.BuildingSignals;
 import com.example.hangil_app.data.api.dto.Buildings;
 import com.example.hangil_app.data.api.dto.IndoorPath;
+import com.example.hangil_app.data.api.dto.NodeDetail;
 import com.example.hangil_app.data.api.dto.Nodes;
 import com.example.hangil_app.data.api.dto.Position;
+import com.example.hangil_app.data.api.dto.Search;
 import com.example.hangil_app.data.api.dto.StartEndNode;
 
 import retrofit2.Call;
@@ -31,5 +33,15 @@ public interface RetrofitService {
     @POST("v1/building/path")
     Call<IndoorPath> getIndoorPath(
             @Body StartEndNode startEndNode
+    );
+
+    @POST("v1/nodes")
+    Call<Nodes> getNodesByName(
+            @Body Search search
+    );
+
+    @GET("v1/admin/node/{nodeId}")
+    Call<NodeDetail> getNode(
+            @Path("nodeId") int nodeId
     );
 }

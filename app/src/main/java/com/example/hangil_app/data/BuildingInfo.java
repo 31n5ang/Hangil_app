@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 public enum BuildingInfo {
-    NONE(0, new ArrayList<>(), 0, null),
+    NONE(0, "NONE", new ArrayList<>(), 0, null),
     GONG2(
             1,
+            "공학 2관",
             Arrays.asList(
                     // 건물 입구 들의 좌표를 나타냄
                       new Entrance(35, 54, new TMapPoint(36.766598, 127.281840)),
@@ -127,7 +128,7 @@ public enum BuildingInfo {
                         put(15, new Coord(3326, 1453));
                         put(12, new Coord(3370, 1453));
                         put(14, new Coord(3410, 1440));
-                        put(80, new Coord(3160, 1418));
+                        put(86, new Coord(3160, 1418));
                         put(85, new Coord(3568, 1356));
                         put(10, new Coord(3365, 1325));
                         put(11, new Coord(3326, 1325));
@@ -140,9 +141,51 @@ public enum BuildingInfo {
                         put(5, new Coord(3497, 988));
                         put(4, new Coord(3436, 918));
                         put(13, new Coord(3647, 966));
+                        put(500, new Coord(934, 2050));
+                        put(501, new Coord(1090, 2146));
+                        put(502, new Coord(1251, 2150));
+                        put(503, new Coord(986, 2230));
+                        put(504, new Coord(1094, 2880));
+                        put(505, new Coord(1199, 3056));
+                        put(506, new Coord(1171, 3096));
+                        put(507, new Coord(1307, 3112));
+                        put(508, new Coord(1418, 3055));
+                        put(509, new Coord(1617, 3061));
+                        put(510, new Coord(1836, 3057));
+                        put(511, new Coord(2049, 3061));
+                        put(512, new Coord(2174, 3141));
+                        put(513, new Coord(2288, 3057));
+                        put(514, new Coord(2501, 3049));
+                        put(515, new Coord(2728, 3051));
+                        put(516, new Coord(2824, 3051));
+                        put(517, new Coord(3017, 3062));
+                        put(518, new Coord(3185, 3066));
+                        put(519, new Coord(3257, 2882));
+                        put(520, new Coord(3260, 2622));
+                        put(521, new Coord(3260, 2493));
+                        put(522, new Coord(3264, 2365));
+                        put(523, new Coord(3092, 2124));
+                        put(524, new Coord(3275, 2102));
+                        put(525, new Coord(3331, 2167));
+                        put(526, new Coord(3359, 2231));
+                        put(527, new Coord(3556, 2239));
+                        put(528, new Coord(3487, 2098));
+                        put(529, new Coord(3708, 2102));
+                        put(530, new Coord(4206, 2098));
+                        put(531, new Coord(4334, 2102));
+                        put(532, new Coord(3367, 1894));
+                        put(533, new Coord(3467, 1830));
+                        put(534, new Coord(3708, 1830));
+                        put(535, new Coord(3363, 1745));
+                        put(536, new Coord(3363, 1589));
+                        put(537, new Coord(3363, 1376));
+                        put(538, new Coord(3367, 1228));
+                        put(539, new Coord(3363, 1064));
+                        put(540, new Coord(3367, 879));
+                        put(541, new Coord(3974, 2101));
                     }},
                     (Map) new HashMap<Integer, Coord>() {{ // 2층
-                        put(500, new Coord(857, 2087));
+                        put(499, new Coord(857, 2087));
                         put(102, new Coord(938, 2087));
                         put(103, new Coord(1003, 2087));
                         put(100, new Coord(1003, 2171));
@@ -310,6 +353,47 @@ public enum BuildingInfo {
                         put(2, new Coord(3367, 883));
                         put(5, new Coord(3411, 883));
                         put(3, new Coord(3481, 855));
+                        put(500, new Coord(1000, 2248));
+                        put(501, new Coord(1004, 2481));
+                        put(502, new Coord(996, 2796));
+                        put(503, new Coord(998, 2919));
+                        put(504, new Coord(1171, 3062));
+                        put(505, new Coord(1349, 3054));
+                        put(506, new Coord(1558, 3066));
+                        put(507, new Coord(1769, 3064));
+                        put(508, new Coord(1867, 3064));
+                        put(509, new Coord(2072, 3068));
+                        put(510, new Coord(2272, 3063));
+                        put(511, new Coord(2481, 3063));
+                        put(512, new Coord(2658, 3063));
+                        put(513, new Coord(2834, 3067));
+                        put(514, new Coord(3011, 3062));
+                        put(515, new Coord(3191, 3062));
+                        put(516, new Coord(3272, 2989));
+                        put(517, new Coord(3277, 2788));
+                        put(518, new Coord(3278, 2470));
+                        put(519, new Coord(3275, 2247));
+                        put(520, new Coord(3426, 2153));
+                        put(521, new Coord(3422, 2079));
+                        put(522, new Coord(3365, 2051));
+                        put(523, new Coord(3369, 1899));
+                        put(524, new Coord(3467, 1829));
+                        put(525, new Coord(3627, 1825));
+                        put(526, new Coord(3758, 1825));
+                        put(527, new Coord(3689, 1891));
+                        put(528, new Coord(3685, 2042));
+                        put(529, new Coord(3787, 2108));
+                        put(530, new Coord(3992, 2111));
+                        put(531, new Coord(4197, 2110));
+                        put(532, new Coord(4336, 2110));
+                        put(533, new Coord(3368, 1757));
+                        put(534, new Coord(3368, 1622));
+                        put(535, new Coord(3372, 1507));
+                        put(536, new Coord(3368, 1372));
+                        put(537, new Coord(3368, 1253));
+                        put(538, new Coord(3368, 1138));
+                        put(539, new Coord(3368, 1011));
+
                     }},
                     (Map) new HashMap<Integer, Coord>() {{
                         // 3층
@@ -445,6 +529,38 @@ public enum BuildingInfo {
                         put(87, new Coord(3367, 829));
                         put(88, new Coord(3312, 829));
                         put(90, new Coord(3157, 875));
+                        put(500, new Coord(1096, 2146));
+                        put(501, new Coord(1092, 2322));
+                        put(502, new Coord(1096, 2503));
+                        put(503, new Coord(1092, 2896));
+                        put(504, new Coord(1165, 3064));
+                        put(505, new Coord(1333, 3064));
+                        put(506, new Coord(1562, 3059));
+                        put(507, new Coord(1828, 3068));
+                        put(508, new Coord(2075, 3058));
+                        put(509, new Coord(2280, 3062));
+                        put(510, new Coord(2491, 3060));
+                        put(511, new Coord(2693, 3065));
+                        put(512, new Coord(2853, 3065));
+                        put(513, new Coord(3013, 3057));
+                        put(514, new Coord(3181, 3061));
+                        put(515, new Coord(3259, 3118));
+                        put(516, new Coord(3263, 2867));
+                        put(517, new Coord(3267, 2372));
+                        put(518, new Coord(3374, 2154));
+                        put(519, new Coord(3374, 2089));
+                        put(520, new Coord(3313, 2085));
+                        put(521, new Coord(3366, 1912));
+                        put(522, new Coord(3460, 1822));
+                        put(523, new Coord(3718, 1839));
+                        put(524, new Coord(3366, 1738));
+                        put(525, new Coord(3366, 1624));
+                        put(526, new Coord(3366, 1501));
+                        put(527, new Coord(3362, 1370));
+                        put(528, new Coord(3366, 1259));
+                        put(529, new Coord(3366, 1132));
+                        put(530, new Coord(3369, 1016));
+                        put(531, new Coord(3361, 885));
                     }},
                     (Map) new HashMap<Integer, Coord>() {{
                         // 4층
@@ -618,12 +734,14 @@ public enum BuildingInfo {
     );
 
     public final int id;
+    public final String name;
     public final List<Entrance> entrances;
     public final int floorCount;
     public final Map<Integer, Coord>[] coordByNumber;
-    BuildingInfo(int id, List<Entrance> entrances, int floorCount,
+    BuildingInfo(int id, String name, List<Entrance> entrances, int floorCount,
                  Map<Integer, Coord>[] coordByNumber) {
         this.id = id;
+        this.name = name;
         this.entrances = entrances;
         this.floorCount = floorCount;
         this.coordByNumber = coordByNumber;

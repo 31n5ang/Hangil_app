@@ -6,7 +6,7 @@ import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.view.View;
 
-import com.example.hangil_app.OnPositionGetListener;
+import com.example.hangil_app.data.OnPositionGetListener;
 import com.example.hangil_app.data.BuildingBackground;
 import com.example.hangil_app.data.BuildingInfo;
 import com.example.hangil_app.data.DataManager;
@@ -15,10 +15,14 @@ import com.example.hangil_app.data.api.dto.IndoorPath;
 import com.example.hangil_app.data.api.dto.PathNode;
 import com.example.hangil_app.data.api.dto.Signal;
 import com.example.hangil_app.data.api.dto.StartEndNode;
+import com.example.hangil_app.system.Hangil;
 import com.example.hangil_app.wifi.WifiHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class IndoorMap {
     public static IndoorMap indoorMap;
@@ -29,10 +33,11 @@ public class IndoorMap {
     private final Context context;
     private final float screenWidth;
     private final float screenHeight;
+    @Getter @Setter
     private boolean isIndoorGuideMode = false;
-    private boolean isShowPath = true;
+    @Getter @Setter
+    private boolean canWifiScan = false;
     private int lastFloor = NONE;
-    private Coord currMeCoord = new Coord(-1, -1);
     public static IndoorMap getInstance(Context context, IndoorMapView indoorMapView,
                                         float screenWidth,
                                         float screenHeight) {
@@ -55,6 +60,7 @@ public class IndoorMap {
     }
     public void startIndoorGuide(StartEndNode startEndNode) {
         isIndoorGuideMode = true;
+        canWifiScan = true;
         dataManager.requestGetIndoorPath(startEndNode, (indoorPath) -> {
             startRequestGetPositionLoop(startEndNode.getBuildingId(), (position) -> {
                 int currNumber = position.getNumber();
@@ -65,20 +71,27 @@ public class IndoorMap {
                 int endNodeNumber = startEndNode.getEndNodeNumber();
                 int endNodeFloor = startEndNode.getEndNodeFloor();
 
+                // 토스트 위치 알람
+                Hangil.showToastLong(context.getApplicationContext(), String.format("%s층, %s번",
+                        position.getFloor(), position.getNumber()));
+
                 // 배경 업데이트
                 if (lastFloor != currFloor) updateBackground(buildingId, currFloor);
 
-                // 도착 마커 생성
-                if (currFloor == endNodeFloor) {
-                    addEndMarker(buildingId, endNodeFloor, endNodeNumber);
-                } else {
-                    removeEndMarker();
+                // 만약 안내 모드라면
+                if (isIndoorGuideMode) {
+                    // 도착 마커 생성
+                    if (currFloor == endNodeFloor) {
+                        addEndMarker(buildingId, endNodeFloor, endNodeNumber);
+                    } else {
+                        removeEndMarker();
+                    }
+
+                    // 카메라 조정
+
+                    // 경로 그리기
+                    addPath(buildingId, currFloor, indoorPath);
                 }
-
-                // 카메라 조정
-
-                // 경로 그리기
-                if (isShowPath) addPath(buildingId, currFloor, indoorPath);
 
                 // 내 위치 조정
                 moveMeCoord(buildingId, currFloor, currNumber);
@@ -91,7 +104,9 @@ public class IndoorMap {
     }
 
     public void stopIndoorGuide() {
-        isIndoorGuideMode = false;
+        setIndoorGuideMode(false);
+        removePath();
+        removeEndMarker();
     }
 
     private void addPath(int buildingId, int floor, IndoorPath indoorPath) {
@@ -106,6 +121,10 @@ public class IndoorMap {
             }
         }
         IndoorMapView.setPath(validCoords);
+    }
+
+    private void removePath() {
+        IndoorMapView.setPath(new ArrayList<>());
     }
 
     private void init() {
@@ -126,7 +145,6 @@ public class IndoorMap {
     private void moveMeCoord(int buildingId, int floor, int number) {
         Coord newCoord = BuildingInfo.findBuildingInfo(buildingId).coordByNumber[floor].get(number);
         IndoorMapView.setMeCoord(newCoord);
-        currMeCoord = newCoord;
     }
 
     private void addEndMarker(int buildingId, int floor, int number) {
@@ -147,7 +165,7 @@ public class IndoorMap {
     private void startRequestGetPositionLoop(int buildingId,
                                              OnPositionGetListener onPositionGetListener) {
         // 실내 안내 모드가 꺼지면 종료
-        if (!isIndoorGuideMode) return;
+        if (!canWifiScan) return;
         wifiHelper.scanWifi((scanResults) -> {
             // 스캔에 성공하면
             // 와이파이 스캔 결과를 Signal로 매핑
@@ -157,7 +175,7 @@ public class IndoorMap {
                         new Signal(
                                 scanResult.SSID,
                                 scanResult.BSSID,
-                                scanResult.level
+                                scanResult.level //RSSI
                         )
                 );
             }
@@ -165,6 +183,7 @@ public class IndoorMap {
             // 매핑된 Signal 정보로 위치 API 요청
             BuildingSignals newBuildingSignals = new BuildingSignals(buildingId, newSignals);
             dataManager.requestGetPosition(newBuildingSignals, (position) -> {
+                if (!canWifiScan) return;
                 // 위치 전달
                 onPositionGetListener.onPositionGet(position);
                 // 반복

@@ -42,18 +42,29 @@
             android:id="@+id/buildingName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="방설명"
+            android:text="건물이름"
             app:layout_constraintStart_toEndOf="@+id/MarkerIV"
             app:layout_constraintTop_toBottomOf="@+id/roomName" />
 
         <Button
-            android:id="@+id/startGuideBtn"
+            android:id="@+id/selectLocBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="안내"
+            android:text="선택"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/roomDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="방설명"
+            app:layout_constraintBottom_toBottomOf="@+id/buildingName"
+            app:layout_constraintStart_toEndOf="@+id/buildingName"
+            app:layout_constraintTop_toTopOf="@+id/buildingName"
+            app:layout_constraintVertical_bias="0.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

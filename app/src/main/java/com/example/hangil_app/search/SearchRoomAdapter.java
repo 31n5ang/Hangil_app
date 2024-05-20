@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hangil_app.MainActivity;
 import com.example.hangil_app.R;
+import com.example.hangil_app.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,27 +22,28 @@ import lombok.Setter;
 public class SearchRoomAdapter extends RecyclerView.Adapter<SearchRoomAdapter.RecyclerViewHolder>{
     @Getter @Setter
     private List<SearchRoomData> searchRoomDatas = new ArrayList<>();
-    private final OnClickStartGuideButton onStartGuideCallback;
-    public SearchRoomAdapter(OnClickStartGuideButton onStartGuideCallback) {
-        this.onStartGuideCallback = onStartGuideCallback;
+    private final OnClickSelectLocBtnListener onClickSelectLocBtnCallback;
+    public SearchRoomAdapter(OnClickSelectLocBtnListener onStartGuideCallback) {
+        this.onClickSelectLocBtnCallback = onStartGuideCallback;
     }
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
         private TextView roomName;
-        private TextView roomDetail;
+        private TextView buildingName;
+        private TextView roomDescription;
         private Button startGuideBtn;
-        private MainActivity mainActivity;
 
         public RecyclerViewHolder(@NonNull View view) {
             super(view);
             roomName = view.findViewById(R.id.roomName);
-            roomDetail = view.findViewById(R.id.buildingName);
-            startGuideBtn = view.findViewById(R.id.startGuideBtn);
+            buildingName = view.findViewById(R.id.buildingName);
+            startGuideBtn = view.findViewById(R.id.selectLocBtn);
+            roomDescription = view.findViewById(R.id.roomDescription);
         }
 
         void onBind(SearchRoomData searchRoomData) {
             roomName.setText(searchRoomData.getNode().getName());
-            roomDetail.setText(searchRoomData.getBuildingName());
-
+            buildingName.setText(searchRoomData.getBuildingName());
+            roomDescription.setText(" "+searchRoomData.getNode().getDescription());
         }
     }
 
@@ -56,8 +58,12 @@ public class SearchRoomAdapter extends RecyclerView.Adapter<SearchRoomAdapter.Re
     public void onBindViewHolder(@NonNull SearchRoomAdapter.RecyclerViewHolder holder, int position) {
         holder.onBind(searchRoomDatas.get(position));
         holder.startGuideBtn.setOnClickListener((event) -> {
-            // 안내 모드 클릭 시 클릭한 searchRoomData 객체 전달
-            onStartGuideCallback.onClickStartGuideButton(searchRoomDatas.get(position));
+            // 선택 클릭 시 클릭한 searchRoomData 객체 전달
+            // 선택했다면 출발지는 외부가 아님을 알림
+            if (SearchActivity.isStartRoom()) {
+                MainActivity.setStartIsOutdoor(false);
+            }
+            onClickSelectLocBtnCallback.onClickSelectLocBtn(searchRoomDatas.get(position));
         });
     }
 

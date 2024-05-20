@@ -21,13 +21,13 @@ public class BuildingBackground {
                         // 공학 2관
                         null,
                         BitmapFactory.decodeResource(BuildingBackground.context.getResources(),
-                                R.drawable.gong2_1_120),
+                                R.drawable.gong2_1),
                         BitmapFactory.decodeResource(BuildingBackground.context.getResources(),
-                                R.drawable.gong2_2_120),
+                                R.drawable.gong2_2),
                         BitmapFactory.decodeResource(BuildingBackground.context.getResources(),
-                                R.drawable.gong2_3_120),
+                                R.drawable.gong2_3),
                         BitmapFactory.decodeResource(BuildingBackground.context.getResources(),
-                                R.drawable.gong2_4_120)
+                                R.drawable.gong2_4)
                 },
         };
     }

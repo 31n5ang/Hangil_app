@@ -1,5 +1,8 @@
 package com.example.hangil_app.tmap;
 
+import static com.example.hangil_app.data.DataManager.BUILDING_COUNT;
+import static com.example.hangil_app.data.DataManager.MIN_BUILDING_INDEX;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -178,6 +181,13 @@ public class TMap {
     }
 
     public boolean isBuildingMarker(TMapMarkerItem tMapMarkerItem) {
-        return Integer.parseInt(tMapMarkerItem.getId()) >= 1;
+        int markerId = Integer.parseInt(tMapMarkerItem.getId());
+        return MIN_BUILDING_INDEX <= markerId && markerId < MIN_BUILDING_INDEX + BUILDING_COUNT;
+    }
+
+    public void getLocAddress(TMapPoint tMapPoint,
+                           TMapData.OnReverseGeocodingListener addressListener) {
+        tMapData.reverseGeocoding(tMapPoint.getLatitude(), tMapPoint.getLongitude(),
+                "A10", addressListener);
     }
 }

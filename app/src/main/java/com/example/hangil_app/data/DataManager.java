@@ -10,8 +10,10 @@ import com.example.hangil_app.data.api.dto.BuildingSignals;
 import com.example.hangil_app.data.api.dto.Buildings;
 import com.example.hangil_app.data.api.dto.IndoorPath;
 import com.example.hangil_app.data.api.dto.Node;
+import com.example.hangil_app.data.api.dto.NodeDetail;
 import com.example.hangil_app.data.api.dto.Nodes;
 import com.example.hangil_app.data.api.dto.Position;
+import com.example.hangil_app.data.api.dto.Search;
 import com.example.hangil_app.data.api.dto.StartEndNode;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DataManager {
     public static final int MIN_BUILDING_INDEX = 1;
-    public static final int BUILDING_COUNT = 1;
+    public static final int BUILDING_COUNT = 37;
     public static DataManager dataManager; // Singleton
     private final Retrofit retrofit;
     private final RetrofitService retrofitService;
@@ -91,6 +93,7 @@ public class DataManager {
                         for (Building building : buildings) {
                             buildingByIdMap.put(building.getId(), building);
                         }
+                        Log.d(API, String.valueOf(buildings.size()));
                         callback.onBuildingsReady(buildings);
                     } else {
                         Log.e(API, response.errorBody().toString());
@@ -142,6 +145,46 @@ public class DataManager {
 
             @Override
             public void onFailure(Call<IndoorPath> call, Throwable t) {
+                Log.e(API, t.toString());
+            }
+        });
+    }
+
+    public void requestGetNodesByName(Search search, OnNodesByNameReadyListener callback) {
+        Call<Nodes> call = retrofitService.getNodesByName(search);
+        call.enqueue(new Callback<Nodes>() {
+            @Override
+            public void onResponse(Call<Nodes> call, Response<Nodes> response) {
+                if (response.isSuccessful()) {
+                    callback.onNodesByNameReady(response.body());
+                } else {
+                    Log.e(API, response.errorBody().toString());
+                    Log.e("minsang", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Nodes> call, Throwable t) {
+                Log.e("minsang", t.toString());
+                Log.e(API, t.toString());
+            }
+        });
+    }
+
+    public void requestGetNodeById(int nodeId, OnNodeByIdReadyListener callback) {
+        Call<NodeDetail> call = retrofitService.getNode(nodeId);
+        call.enqueue(new Callback<NodeDetail>() {
+            @Override
+            public void onResponse(Call<NodeDetail> call, Response<NodeDetail> response) {
+                if (response.isSuccessful()) {
+                    callback.onNodeByIdReady(response.body());
+                } else {
+                    Log.e(API, response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NodeDetail> call, Throwable t) {
                 Log.e(API, t.toString());
             }
         });

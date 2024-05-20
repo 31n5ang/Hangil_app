@@ -7,56 +7,109 @@
     android:layout_height="match_parent"
     tools:context=".IndoorActivity">
 
-    <com.example.hangil_app.indoor.IndoorMapView
-        android:id="@+id/indoorMapView"
+    <LinearLayout
+        android:id="@+id/indoorMapViewContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ImageView
-        android:id="@+id/destInputBg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/input_background"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
-    <ImageView
-        android:id="@+id/destInputGo"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/indoorDestinationForm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:src="@drawable/blue_marker_circle"
-        app:layout_constraintBottom_toBottomOf="@+id/destInputBg"
-        app:layout_constraintEnd_toEndOf="@+id/destInputBg"
-        app:layout_constraintTop_toTopOf="@+id/destInputBg" />
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/destInput"
-        android:layout_width="235dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:background="@null"
-        android:ems="8"
-        android:hint="어디로 갈까요? ex) 학술정보팀"
-        android:inputType="text"
-        android:singleLine="true"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/destInputBg"
-        app:layout_constraintEnd_toEndOf="@+id/destInputBg"
-        app:layout_constraintStart_toStartOf="@+id/destInputBg"
-        app:layout_constraintTop_toTopOf="@+id/destInputBg" />
+        <ImageView
+            android:id="@+id/indoorEndInputBg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/input_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/indoorStartInputBg" />
+
+        <TextView
+            android:id="@+id/indoorEndInput"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:ems="8"
+            android:hint="도착지 선택"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/indoorEndInputBg"
+            app:layout_constraintEnd_toEndOf="@+id/indoorEndInputBg"
+            app:layout_constraintStart_toStartOf="@+id/indoorEndInputBg"
+            app:layout_constraintTop_toTopOf="@+id/indoorEndInputBg" />
+
+        <!--출발지-->
+        <ImageView
+            android:id="@+id/indoorStartInputBg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/input_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/indoorStartInput"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:ems="8"
+            android:hint="출발지 선택"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/indoorStartInputBg"
+            app:layout_constraintEnd_toEndOf="@+id/indoorStartInputBg"
+            app:layout_constraintStart_toStartOf="@+id/indoorStartInputBg"
+            app:layout_constraintTop_toTopOf="@+id/indoorStartInputBg" />
+
+        <ImageView
+            android:id="@+id/indoorStartGuideBtn"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:src="@drawable/walk_man"
+            app:layout_constraintBottom_toBottomOf="@+id/indoorEndInputBg"
+            app:layout_constraintEnd_toEndOf="@+id/indoorEndInputBg"
+            app:layout_constraintTop_toTopOf="@+id/indoorEndInputBg" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-        android:id="@+id/currLocBtn"
+        android:id="@+id/hangilLogo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="25dp"
+        android:alpha="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/hangil_logo" />
+
+    <Button
+        android:id="@+id/goOutdoorBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
+        android:text="나가기"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
