@@ -75,6 +75,8 @@ public class IndoorMap {
             startRequestGetPositionLoop(startEndNode.getBuildingId(), (position) -> {
                 // 와이파이 첫 스캔이라면 성공으로 표시
                 if (!isWifiScanSuccessFirst) {
+                    // 카메라 내 위치로 옮기기
+                    setCameraToMe();
                     isWifiScanSuccessFirst = true;
                     onWifiScanSuccessFirstListener.onWifiScanSuccess();
                 }

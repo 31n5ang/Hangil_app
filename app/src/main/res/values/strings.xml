@@ -2,5 +2,42 @@
     <string name="app_name">Hangil_app</string>
     <string-array name="building_list">
         <item>공학 2관</item>
+        <item>공학 1관</item>
+        <item>공학 3관</item>
+        <item>공학 4관</item>
+        <item>담헌실학관</item>
+        <item>국제교육센터(GEC)</item>
+        <item>대학본부(본관)</item>
+        <item>인문경영관</item>
+        <item>다담 미래학습관</item>
+        <item>다산정보관</item>
+        <item>학생회관</item>
+        <item>학생통합지원센터</item>
+        <item>복지관</item>
+        <item>중앙공원</item>
+        <item>새롬관</item>
+        <item>산학협력관</item>
+        <item>강당</item>
+        <item>운동장</item>
+        <item>체육관</item>
+        <item>R-D돔(나래돔)</item>
+        <item>캠퍼스 컴퍼니</item>
+        <item>스마트러닝팩토리</item>
+        <item>창업보육관</item>
+        <item>테니스장</item>
+        <item>나우리인성관</item>
+        <item>공동직장어린이집</item>
+        <item>101동(해울관)</item>
+        <item>102동(예지관)</item>
+        <item>103동(예솔관)</item>
+        <item>104동(다솔관)</item>
+        <item>105동(함지관)</item>
+        <item>106동(한울관)</item>
+        <item>201동(솔빛관)</item>
+        <item>202동(청솔관)</item>
+        <item>203동(IH)</item>
+        <item>204동(은솔관)</item>
+        <item>205동(참빛관)</item>
     </string-array>
+
 </resources>

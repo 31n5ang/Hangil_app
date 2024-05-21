@@ -731,7 +731,45 @@ public enum BuildingInfo {
                         put(535, new Coord(3717, 1828));
                     }}
             }
-    );
+    ),
+    GONG1(2, "공학 1관", new ArrayList<>(), 0, null),
+    GONG3(3, "공학 3관", new ArrayList<>(), 0, null),
+    GONG4(4, "공학 4관", new ArrayList<>(), 0, null),
+    DAMHEON(5, "담헌실학관", new ArrayList<>(), 9, null),
+    GEC(6, "국제교육센터(GEC)", new ArrayList<>(), 0, null),
+    BONBU(7, "대학본부(본관)", new ArrayList<>(), 3, null),
+    INMUN(8, "인문경영관", new ArrayList<>(), 5, null),
+    DADAM(9, "다담 미래학습관", new ArrayList<>(), 0, null),
+    DASAN(10, "다산정보관", new ArrayList<>(), 4, null),
+    HAKSAENG(11, "학생회관", new ArrayList<>(), 3, null),
+    TONGHAB(12, "학생통합지원센터", new ArrayList<>(), 0, null),
+    BOKJI(13, "복지관", new ArrayList<>(), 3, null),
+    JUNGDANG(14, "중앙공원", new ArrayList<>(), 0, null),
+    SAEROM(16, "새롬관 (교육원실습동)", new ArrayList<>(), 0, null),
+    SANHAK(17, "산학협력관", new ArrayList<>(), 0, null),
+    GANGDANG(18, "강당", new ArrayList<>(), 0, null),
+    UN_DONGJANG(19, "운동장", new ArrayList<>(), 0, null),
+    CHEYUK(20, "체육관", new ArrayList<>(), 0, null),
+    RND_DOM(21, "R&D돔(나래돔)", new ArrayList<>(), 0, null),
+    CAMPUS_CO(22, "캠퍼스 컴퍼니", new ArrayList<>(), 0, null),
+    SMART(23, "스마트러닝팩토리", new ArrayList<>(), 0, null),
+    CHANGUP(24, "창업보육관", new ArrayList<>(), 0, null),
+    TENNIS(25, "테니스장 부대시설", new ArrayList<>(), 0, null),
+    NAOURI(26, "나우리인성관", new ArrayList<>(), 0, null),
+    EORYEONJIB(27, "공동직장어린이집", new ArrayList<>(), 0, null),
+    HAEOUL(28, "101동(해울관)", new ArrayList<>(), 0, null),
+    YEJI(29, "102동(예지관)", new ArrayList<>(), 0, null),
+    YESOL(30, "103동(예솔관)", new ArrayList<>(), 0, null),
+    DASOL(31, "104동(다솔관)", new ArrayList<>(), 0, null),
+    HAMJI(32, "105동(함지관)", new ArrayList<>(), 0, null),
+    HANUL(33, "106동(한울관)", new ArrayList<>(), 0, null),
+    SOLBIT(34, "201동(솔빛관)", new ArrayList<>(), 0, null),
+    CHEONGSOL(35, "202동(청솔관)", new ArrayList<>(), 0, null),
+    IH(36, "203동(IH)", new ArrayList<>(), 0, null),
+    EUNSOL(37, "204동(은솔관)", new ArrayList<>(), 0, null),
+    CHAMBIT(38, "205동(참빛관)", new ArrayList<>(), 0, null);
+
+
 
     public final int id;
     public final String name;

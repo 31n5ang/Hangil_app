@@ -42,7 +42,7 @@
 
         <Spinner
             android:id="@+id/buildingSpinner"
-            android:layout_width="wrap_content"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:entries="@array/building_list"
             app:layout_constraintBottom_toBottomOf="@+id/searchInput"

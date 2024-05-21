@@ -23,6 +23,7 @@ public class TMap {
     public static final int INIT_ZOOM_LEVEL = 17;
     public static final int ME = 0;
     public static final int ENTRANCE = 100;
+    public static final int START = 300;
     private static final String PATH = "path";
     private static final int PATH_COLOR = 0x2285B0;
     private static final int PATH_OUTLINE_COLOR = 0x1C7094;
@@ -34,7 +35,6 @@ public class TMap {
     @Setter
     private OnLocationChangeFirstListener onLocationChangeFirstListener;
     @Setter
-    private TMapView.OnLongClickListenerCallBack onLongClickListenerCallBack;
     public boolean isLocationChanged = false;
     public boolean isGuideMode = false;
     public boolean isTmapReady = false;
@@ -185,9 +185,7 @@ public class TMap {
         return MIN_BUILDING_INDEX <= markerId && markerId < MIN_BUILDING_INDEX + BUILDING_COUNT;
     }
 
-    public void getLocAddress(TMapPoint tMapPoint,
-                           TMapData.OnReverseGeocodingListener addressListener) {
-        tMapData.reverseGeocoding(tMapPoint.getLatitude(), tMapPoint.getLongitude(),
-                "A10", addressListener);
+    public void setOnLongClickListener(TMapView.OnLongClickListenerCallBack onLongClickListenerCallBack) {
+        tMapView.setOnLongClickListenerCallback(onLongClickListenerCallBack);
     }
 }

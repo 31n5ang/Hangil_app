@@ -46,7 +46,7 @@ public class Hangil {
     public static final String DIALOG_NEGATIVE_TEXT = "싫어요";
 
     public static final int MIN_BUILDING_INDEX = 1;
-    public static final int BUILDING_COUNT = 37;
+    public static final int BUILDING_COUNT = 38;
 
     public static void suggestGuideDialog(
             Context context,
@@ -70,7 +70,7 @@ public class Hangil {
     }
 
     public static void showToastShort(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     public static void showToastLong(Context context, String message) {

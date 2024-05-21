@@ -14,14 +14,12 @@ import static com.example.hangil_app.system.Hangil.SEARCH_TYPE_END;
 import static com.example.hangil_app.system.Hangil.SEARCH_TYPE_START;
 import static com.example.hangil_app.system.Hangil.START_NODE_FLOOR;
 import static com.example.hangil_app.system.Hangil.START_NODE_NUMBER;
-import static com.example.hangil_app.system.Hangil.TEST;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -59,7 +57,7 @@ public class IndoorActivity extends AppCompatActivity {
     private StartEndNode startEndNode;
     private String endNodeName;
 
-    // TODO 별도 분리할 필요가 있어보임. 콜백? DI? 흠..
+    // TODO 별도 분리할 필요가 있어보임.
     @Getter
     @Setter
     private static SearchRoomData startRoomData;
@@ -216,7 +214,6 @@ public class IndoorActivity extends AppCompatActivity {
     private void onGuideSetting(StartEndNode startEndNode) {
         // 로딩 창 띄우기
         showProgressSpin();
-        Log.d(TEST, "로딩 시작..");
 
         // 실내 지도 생성
         Point size = new Point();
@@ -228,7 +225,6 @@ public class IndoorActivity extends AppCompatActivity {
             // 와이파이 스캔에 처음으로 성공 했다면
             // 로딩 창 숨기기
             hideProgressSpin();
-            Log.d(TEST, "로딩 종료..");
         });
     }
 

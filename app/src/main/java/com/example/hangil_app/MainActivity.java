@@ -16,6 +16,7 @@ import static com.example.hangil_app.system.Hangil.START_NODE_NUMBER;
 import static com.example.hangil_app.system.Hangil.suggestGuideDialog;
 import static com.example.hangil_app.tmap.TMap.ENTRANCE;
 import static com.example.hangil_app.tmap.TMap.INIT_ZOOM_LEVEL;
+import static com.example.hangil_app.tmap.TMap.START;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -35,6 +36,7 @@ import com.example.hangil_app.data.DataManager;
 import com.example.hangil_app.data.Entrance;
 import com.example.hangil_app.data.api.dto.Building;
 import com.example.hangil_app.data.api.dto.Node;
+import com.example.hangil_app.info.OnInfoBuildingReadyListener;
 import com.example.hangil_app.search.OnSelectRoomCallback;
 import com.example.hangil_app.search.SearchRoomData;
 import com.example.hangil_app.system.Hangil;
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
     private SearchRoomData endRoomData = null;
     @Getter
     private static OnSelectRoomCallback onOutdoorSelectRoomCallback;
+    @Getter
+    private static OnInfoBuildingReadyListener onInfoBuildingReadyListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,14 +109,33 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
 
             // 건물 정보 Rest API 불러온 후 마커 생성
             dataManager.requestGetBuildings((buildings) -> {
+                Bitmap buildingIcon = BitmapFactory.decodeResource(getResources(),
+                        R.drawable.orange_marker_small);
+
+                // 마커 생성
                 for (Building building : buildings) {
                     int id = building.getId();
                     String name = building.getName();
                     String description = building.getDescription();
                     double latitude = building.getLatitude();
                     double longitude = building.getLongitude();
-                    tMap.addMarker(id, null, new TMapPoint(latitude, longitude), name, description);
+                    tMap.addMarker(id, buildingIcon, new TMapPoint(latitude, longitude), name, description);
                 }
+
+                // 건물 롱 클릭 버튼 이벤트 생성
+                tMap.setOnLongClickListener((tMapMarkerItems, tMapPOIItems, tMapPoint) -> {
+                    for (TMapMarkerItem selectedMarker : tMapMarkerItems) {
+                        // 만약 건물이라면
+                        if (tMap.isBuildingMarker(selectedMarker)) {
+                            showProgressSpin();
+                            Intent intent = new Intent(this, InfoActivity.class);
+                            int buildingId = Integer.parseInt(selectedMarker.getId());
+                            intent.putExtra(BUILDING_ID, buildingId);
+                            startActivity(intent);
+                            break;
+                        }
+                    }
+                });
             });
 
             // 내 위치로 티맵 화면을 조정하는 버튼
@@ -217,26 +240,35 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
                     endInput.setText(desc);
                 }
             });
+
+            // 건물 정보 불러올 때 로딩
+            onInfoBuildingReadyListener = () -> {
+                hideProgressSpin();
+            };
         });
     }
 
+    private void addMarkerStart(TMapPoint start) {
+        Bitmap startIcon = BitmapFactory.decodeResource(getResources(),
+                R.drawable.red_marker_small);
+        tMap.addMarker(START, startIcon, start, null, null);
+    }
 
+    private void removeMarkerStart() {
+        tMap.removeMarker(START);
+    }
 
     private void addMarkerEntrance(int buildingId) {
         Bitmap entranceIcon = BitmapFactory.decodeResource(getResources(),
                 R.drawable.entrance);
-        for (BuildingInfo buildingInfo : BuildingInfo.values()) {
-            // 해당 건물 찾기
-            if (buildingInfo.id == buildingId) {
-                // 입구 마커 생성
-                int add = 0;
-                for (Entrance entrance : buildingInfo.entrances) {
-                    tMap.addMarker(ENTRANCE + add, entranceIcon,
-                            entrance.getTMapPoint(), null, null);
-                    ++add;
-                }
-                break;
-            }
+
+        // 입구 마커 생성
+        BuildingInfo buildingInfo = BuildingInfo.findBuildingInfo(buildingId);
+        int add = 0;
+        for (Entrance entrance : buildingInfo.entrances) {
+            tMap.addMarker(ENTRANCE + add, entranceIcon,
+                    entrance.getTMapPoint(), null, null);
+            ++add;
         }
     }
 
@@ -277,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
                 null
         );
     }
+
     private void suggestIndoorGuideDialog() {
         // 실내 지도로 전환 요청
         Hangil.suggestGuideDialog(
@@ -315,6 +348,7 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
                 null
         );
     }
+
     private void offGuideSetting() {
         // 티맵 가이드모드 종료 및 검색창 활성화
         tMap.offGuideMode();
@@ -322,6 +356,9 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
         // 검색창 바꾸기
         startInput.setText("");
         endInput.setText("");
+
+        // 티맵 출발 마커 삭제
+        removeMarkerStart();
 
         // 티맵 입구 마커 삭제
         removeMarkerEntrace(endRoomData.getBuildingId());
@@ -345,8 +382,13 @@ public class MainActivity extends AppCompatActivity implements TMapView.OnClickL
         // 토스트 메세지
         Hangil.showToastLong(this, "안내를 종료하려면 검색창을 터치하세요!");
 
+
+
         // 경로 생성
         drawPathBuilding(tMap.getLocationPoint(), endRoomData.getBuildingId());
+
+        // 출발 마커 생성
+        addMarkerStart(tMap.getLocationPoint());
 
         // 입구 마커 생성
         addMarkerEntrance(endRoomData.getBuildingId());
