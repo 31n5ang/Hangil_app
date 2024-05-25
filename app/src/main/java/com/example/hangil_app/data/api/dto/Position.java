@@ -8,4 +8,5 @@ import lombok.Data;
 public class Position {
     private int number;
     private int floor;
+    private String type;
 }

@@ -40,7 +40,6 @@ public class InfoIndoorActivity extends AppCompatActivity {
         buildingId = getIntent().getIntExtra(BUILDING_ID, 0);
 
 
-
         // 건물 내부 지도가 존재한다면
         if (BuildingBackground.getBitmaps()[buildingId].length > 1) {
             // 돌아가기 버튼 이벤트 생성

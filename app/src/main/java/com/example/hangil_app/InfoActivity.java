@@ -30,16 +30,13 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
 
 
-
         // initialize
         infoBuildingName = findViewById(R.id.infoBuildingName);
         infoBuildingDescription = findViewById(R.id.infoBuildingDescription);
         infoBackBtn = findViewById(R.id.infoBackBtn);
         infoIndoorBtn = findViewById(R.id.infoIndoorBtn);
         infoBuildingImg = findViewById(R.id.infoBuildingImg);
-
         buildingId = getIntent().getIntExtra(BUILDING_ID, 1);
-        BuildingBackground.setContext(this);
 
         // 건물 이미지 설정
         setInfoBuildingImg(buildingId);
@@ -79,9 +76,6 @@ public class InfoActivity extends AppCompatActivity {
             if (img != null) {
                 // 이미지 설정
                 infoBuildingImg.setImageBitmap(img);
-
-                // MainActivity에 건물 정보 불러왔다고 알림
-                MainActivity.getOnInfoBuildingReadyListener().onInfoBuildingReady();
             }
         }
     }

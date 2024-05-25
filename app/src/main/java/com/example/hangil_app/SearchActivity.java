@@ -47,11 +47,15 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        //
+        // 출발지 입력인지?
         isStartRoom =
                 getIntent().getStringExtra(Hangil.SEARCH_TYPE).equals(Hangil.SEARCH_TYPE_START);
+
+        // 실내 안내인지?
         isIndoorGuide =
                 getIntent().getStringExtra(Hangil.GUIDE_TYPE).equals(Hangil.INDOOR_GUIDE);
+
+        // 건물 아이디 (실내 안내 일때만 사용)
         buildingId = getIntent().getIntExtra(Hangil.BUILDING_ID, MIN_BUILDING_INDEX);
 
 
@@ -64,10 +68,11 @@ public class SearchActivity extends AppCompatActivity {
 
         //
         if (isIndoorGuide) {
-            // 만약 indoor 안내라면 spinner 의미가 없음
+            // 만약 실내 안내라면 spinner 의미가 없음
             buildingSpinner.setSelection(buildingId - 1);
             buildingSpinner.setEnabled(false);
         } else {
+            // 외부 안내라면
             buildingSpinner.setEnabled(true);
             buildingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -127,9 +132,9 @@ public class SearchActivity extends AppCompatActivity {
         return new OnClickSelectLocBtnListener() {
             @Override
             public void onClickSelectLocBtn(SearchRoomData searchRoomData) {
-                // 전달 받은 SearchRoomData 객체를 MainActivity로 전달
+                // 전달 받은 SearchRoomData 객체를 Activity로 전달
                 if (isIndoorGuide) {
-                    IndoorActivity.getOnSelectRoomCallback().onSelectRoom(isStartRoom, searchRoomData);
+                    IndoorActivity.getOnIndoorSelectRoomCallback().onSelectRoom(isStartRoom, searchRoomData);
                 } else {
                     MainActivity.getOnOutdoorSelectRoomCallback().onSelectRoom(isStartRoom, searchRoomData);
                 }

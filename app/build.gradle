@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.hangil_app"
-        minSdk 23
+        minSdkVersion defaultMinSdkVersion
         targetSdk 34
         versionCode 1
         versionName "1.0"

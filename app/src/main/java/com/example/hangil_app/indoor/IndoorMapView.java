@@ -47,6 +47,8 @@ public class IndoorMapView extends View {
     @Getter
     @Setter
     private static List<Coord> path = new ArrayList<>();
+    @Getter
+    private static OnPositionChangeListener onPositionChangeListener;
 
     public IndoorMapView(Context context) {
         super(context);
@@ -64,6 +66,8 @@ public class IndoorMapView extends View {
     }
 
     private void init(Context context) {
+        onPositionChangeListener = this::invalidate;
+
         me = BitmapFactory.decodeResource(getResources(), R.drawable.me);
         endMarker = BitmapFactory.decodeResource(getResources(), R.drawable.blue_marker);
 
@@ -74,7 +78,7 @@ public class IndoorMapView extends View {
         paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(10f);
+        paint.setStrokeWidth(20f);
     }
 
     @Override
@@ -98,8 +102,10 @@ public class IndoorMapView extends View {
             }
             canvas.drawPath(indoorPath, paint);
         }
-        if (meCoord != null ) canvas.drawBitmap(me, meCoord.getX() - (float) me.getWidth() / 2,
-                meCoord.getY() - (float) me.getHeight() / 2, null);
+        if (meCoord != null ) {
+            canvas.drawBitmap(me, meCoord.getX() - (float) me.getWidth() / 2,
+                    meCoord.getY() - (float) me.getHeight() / 2, null);
+        }
         if (endMarkerCoord != null) {
             // 노드 위에 찍기
             canvas.drawBitmap(endMarker, endMarkerCoord.getX() - (float) endMarker.getWidth() / 2,

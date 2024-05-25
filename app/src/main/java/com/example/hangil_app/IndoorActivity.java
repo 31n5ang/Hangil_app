@@ -2,6 +2,8 @@ package com.example.hangil_app;
 
 import static com.example.hangil_app.system.Hangil.BUILDING_COUNT;
 import static com.example.hangil_app.system.Hangil.BUILDING_ID;
+import static com.example.hangil_app.system.Hangil.BUILDING_NAME;
+import static com.example.hangil_app.system.Hangil.END_NODE_DESC;
 import static com.example.hangil_app.system.Hangil.END_NODE_FLOOR;
 import static com.example.hangil_app.system.Hangil.END_NODE_ID;
 import static com.example.hangil_app.system.Hangil.END_NODE_NAME;
@@ -12,7 +14,10 @@ import static com.example.hangil_app.system.Hangil.MIN_BUILDING_INDEX;
 import static com.example.hangil_app.system.Hangil.SEARCH_TYPE;
 import static com.example.hangil_app.system.Hangil.SEARCH_TYPE_END;
 import static com.example.hangil_app.system.Hangil.SEARCH_TYPE_START;
+import static com.example.hangil_app.system.Hangil.START_NODE_DESC;
 import static com.example.hangil_app.system.Hangil.START_NODE_FLOOR;
+import static com.example.hangil_app.system.Hangil.START_NODE_ID;
+import static com.example.hangil_app.system.Hangil.START_NODE_NAME;
 import static com.example.hangil_app.system.Hangil.START_NODE_NUMBER;
 
 import android.content.Intent;
@@ -20,24 +25,26 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.hangil_app.data.BuildingBackground;
+import com.example.hangil_app.data.api.dto.Node;
 import com.example.hangil_app.data.api.dto.StartEndNode;
 import com.example.hangil_app.indoor.IndoorMap;
 import com.example.hangil_app.indoor.IndoorMapView;
+import com.example.hangil_app.indoor.OnPositionStairListener;
 import com.example.hangil_app.search.OnSelectRoomCallback;
 import com.example.hangil_app.search.SearchRoomData;
 import com.example.hangil_app.system.Hangil;
 import com.example.hangil_app.system.ProgressSpin;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class IndoorActivity extends AppCompatActivity {
     private TextView endInput;
@@ -47,26 +54,28 @@ public class IndoorActivity extends AppCompatActivity {
     private IndoorMapView indoorMapView;
     private Button goOutdoorBtn;
     private IndoorMap indoorMap;
+    private TextView stairText;
+    private ConstraintLayout stairForm;
     private int buildingId;
+    private String buildingName;
     private int startNodeFloor;
     private int startNodeNumber;
     private int startNodeId;
+    private String startNodeName;
+    private String startNodeDesc;
     private int endNodeFloor;
     private int endNodeNumber;
     private int endNodeId;
-    private StartEndNode startEndNode;
     private String endNodeName;
-
-    // TODO 별도 분리할 필요가 있어보임.
+    private String endNodeDesc;
+    private StartEndNode startEndNode;
+    private SearchRoomData startRoomData;
+    private SearchRoomData endRoomData;
     @Getter
-    @Setter
-    private static SearchRoomData startRoomData;
-    @Getter
-    @Setter
-    private static SearchRoomData endRoomData;
-    @Getter
-    private static OnSelectRoomCallback onSelectRoomCallback;
+    private static OnSelectRoomCallback onIndoorSelectRoomCallback;
     private ProgressSpin progressSpin;
+    @Getter
+    private static OnPositionStairListener onPositionStairListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +87,21 @@ public class IndoorActivity extends AppCompatActivity {
         endInput = findViewById(R.id.indoorEndInput);
         startGuideBtn = findViewById(R.id.indoorStartGuideBtn);
         goOutdoorBtn = findViewById(R.id.goOutdoorBtn);
+        stairText = findViewById(R.id.stairText);
+        stairForm = findViewById(R.id.stairForm);
+
         progressSpin = new ProgressSpin(this);
-//        indoorMapView = findViewById(R.id.indoorMapView);
+        initExtras();
+
+        // 계단일 때 콜백 처리
+        stairText.setText(String.format("계단을 오르내리는 중 입니다..\n%s층으로 향해주세요!", endRoomData.getNode().getFloor()));
+        onPositionStairListener = (isStair) -> {
+            if (isStair) {
+                stairForm.setVisibility(View.VISIBLE);
+            } else {
+                stairForm.setVisibility(View.GONE);
+            }
+        };
 
 
         LinearLayout container = findViewById(R.id.indoorMapViewContainer);
@@ -91,6 +113,7 @@ public class IndoorActivity extends AppCompatActivity {
         container.addView(indoorMapView);
 
         //
+
         String startText = String.format("[%s] %s", startRoomData.getBuildingName(),
                 startRoomData.getNode().getName());
         String endText = String.format("[%s] %s", endRoomData.getBuildingName(),
@@ -98,9 +121,6 @@ public class IndoorActivity extends AppCompatActivity {
 
         startInput.setText(startText);
         endInput.setText(endText);
-
-        BuildingBackground.setContext(this);
-        initExtras();
 
         // 엑스트라 값을 잘 받았는지 확인
         if (!isValidNode(buildingId, startNodeNumber, endNodeNumber) || startRoomData == null || endRoomData == null) {
@@ -123,19 +143,53 @@ public class IndoorActivity extends AppCompatActivity {
 
     private void initExtras() {
         // 건물, 출발지, 도착지 받기
-        buildingId = getIntent().getIntExtra(BUILDING_ID, 0);
-        startNodeFloor = getIntent().getIntExtra(START_NODE_FLOOR, -1);
-        startNodeNumber = getIntent().getIntExtra(START_NODE_NUMBER, -1);
-        endNodeFloor = getIntent().getIntExtra(END_NODE_FLOOR, -1);
-        endNodeNumber = getIntent().getIntExtra(END_NODE_NUMBER, -1);
-        endNodeId = getIntent().getIntExtra(END_NODE_ID, -1);
-        endNodeName = getIntent().getStringExtra(END_NODE_NAME);
+        Intent intent = getIntent();
+        buildingId = intent.getIntExtra(BUILDING_ID, 0);
+        buildingName = intent.getStringExtra(BUILDING_NAME);
+
+        startNodeId =  intent.getIntExtra(START_NODE_ID, -1);
+        startNodeFloor = intent.getIntExtra(START_NODE_FLOOR, -1);
+        startNodeNumber = intent.getIntExtra(START_NODE_NUMBER, -1);
+        startNodeName = intent.getStringExtra(START_NODE_NAME);
+        startNodeDesc = intent.getStringExtra(START_NODE_DESC);
+
+        endNodeFloor = intent.getIntExtra(END_NODE_FLOOR, -1);
+        endNodeNumber = intent.getIntExtra(END_NODE_NUMBER, -1);
+        endNodeId = intent.getIntExtra(END_NODE_ID, -1);
+        endNodeName = intent.getStringExtra(END_NODE_NAME);
+        endNodeDesc = intent.getStringExtra(END_NODE_DESC);
+
+
         startEndNode = new StartEndNode(
                 buildingId,
                 startNodeNumber,
                 startNodeFloor,
                 endNodeNumber,
                 endNodeFloor
+        );
+
+        startRoomData = new SearchRoomData(
+                new Node(
+                        startNodeId,
+                        startNodeNumber,
+                        startNodeFloor,
+                        startNodeName,
+                        startNodeDesc
+                ),
+                buildingId,
+                buildingName
+        );
+
+        endRoomData = new SearchRoomData(
+                new Node(
+                        endNodeId,
+                        endNodeNumber,
+                        endNodeFloor,
+                        endNodeName,
+                        endNodeDesc
+                ),
+                buildingId,
+                buildingName
         );
     }
 
@@ -187,8 +241,8 @@ public class IndoorActivity extends AppCompatActivity {
         });
 
         // SearchActivity의 목록에서 '선택'버튼을 누르게 되면 호출
-        onSelectRoomCallback = ((isStartRoom,
-                                                selectedSearchRoomData) -> {
+        onIndoorSelectRoomCallback = ((isStartRoom,
+                                       selectedSearchRoomData) -> {
             String buildingName = selectedSearchRoomData.getBuildingName();
             String roomName = selectedSearchRoomData.getNode().getName();
             String desc = String.format("[%s] %s", buildingName, roomName);
@@ -218,7 +272,7 @@ public class IndoorActivity extends AppCompatActivity {
         // 실내 지도 생성
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getRealSize(size);
-        indoorMap = IndoorMap.getInstance(this, indoorMapView, size.x, size.y);
+        indoorMap = IndoorMap.getInstance(getApplicationContext(), indoorMapView, size.x, size.y);
 
         // 실내 안내 시작
         indoorMap.startIndoorGuide(startEndNode, () -> {
@@ -294,5 +348,11 @@ public class IndoorActivity extends AppCompatActivity {
         // 와이파이 스캔 꺼두기
         super.onStop();
         indoorMap.setCanWifiScan(false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        indoorMapView.invalidate();
     }
 }

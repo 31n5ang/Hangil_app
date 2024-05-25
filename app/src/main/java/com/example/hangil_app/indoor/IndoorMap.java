@@ -4,11 +4,14 @@ import static com.example.hangil_app.system.Key.API_URL;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;
+import android.util.Log;
 import android.view.View;
 
+import com.example.hangil_app.IndoorActivity;
 import com.example.hangil_app.data.BuildingBackground;
 import com.example.hangil_app.data.BuildingInfo;
 import com.example.hangil_app.data.DataManager;
+import com.example.hangil_app.data.NodeType;
 import com.example.hangil_app.data.OnPositionGetListener;
 import com.example.hangil_app.data.api.dto.BuildingSignals;
 import com.example.hangil_app.data.api.dto.IndoorPath;
@@ -39,6 +42,7 @@ public class IndoorMap {
     private boolean canWifiScan = false;
     private int lastFloor = NONE;
     private boolean isWifiScanSuccessFirst = false;
+    private boolean isStair = false;
     public static IndoorMap getInstance(Context context, IndoorMapView indoorMapView,
                                         float screenWidth,
                                         float screenHeight) {
@@ -56,10 +60,11 @@ public class IndoorMap {
         this.screenHeight = screenHeight;
         wifiHelper = WifiHelper.getInstance(context);
         dataManager = DataManager.getInstance(API_URL);
-        BuildingBackground.setContext(context);
         init();
     }
     public void startIndoorGuide(StartEndNode startEndNode, OnWifiScanSuccessFirstListener onWifiScanSuccessFirstListener) {
+        invalidateIndoor();
+
         // 와이파이 스캔 첫 성공 대기상태로 표시
         isWifiScanSuccessFirst = false;
 
@@ -69,20 +74,16 @@ public class IndoorMap {
         // 와이파이 스캔 시작
         canWifiScan = true;
 
+        // 계단 위치
+        isStair = false;
+
         // 실내 경로 가져오기
         dataManager.requestGetIndoorPath(startEndNode, (indoorPath) -> {
             // 스캔 후 현재 위치 가져오기
             startRequestGetPositionLoop(startEndNode.getBuildingId(), (position) -> {
-                // 와이파이 첫 스캔이라면 성공으로 표시
-                if (!isWifiScanSuccessFirst) {
-                    // 카메라 내 위치로 옮기기
-                    setCameraToMe();
-                    isWifiScanSuccessFirst = true;
-                    onWifiScanSuccessFirstListener.onWifiScanSuccess();
-                }
-
                 int currNumber = position.getNumber();
                 int currFloor = position.getFloor();
+                String currType = position.getType();
                 int buildingId = startEndNode.getBuildingId();
                 int startNodeNumber = startEndNode.getStartNodeNumber();
                 int startNodeFloor = startEndNode.getStartNodeFloor();
@@ -90,8 +91,20 @@ public class IndoorMap {
                 int endNodeFloor = startEndNode.getEndNodeFloor();
 
                 // 토스트 위치 알람
-                Hangil.showToastLong(context.getApplicationContext(), String.format("%s층, %s번",
+                Hangil.showToastShort(context.getApplicationContext(), String.format("%s층, %s번",
                         position.getFloor(), position.getNumber()));
+
+                if (currType != null) {
+                    if (!isStair && currType.equals(NodeType.STAIR.name())) {
+                        // 계단이라면
+                        IndoorActivity.getOnPositionStairListener().onPositionStair(true);
+                        isStair = true;
+                    } else if (isStair && !currType.equals(NodeType.STAIR.name())) {
+                        // 계단이 아니라면
+                        IndoorActivity.getOnPositionStairListener().onPositionStair(false);
+                        isStair = false;
+                    }
+                }
 
                 // 배경 업데이트
                 if (lastFloor != currFloor) updateBackground(buildingId, currFloor);
@@ -105,8 +118,6 @@ public class IndoorMap {
                         removeEndMarker();
                     }
 
-                    // 카메라 조정
-
                     // 경로 그리기
                     addPath(buildingId, currFloor, indoorPath);
                 }
@@ -114,11 +125,22 @@ public class IndoorMap {
                 // 내 위치 조정
                 moveMeCoord(buildingId, currFloor, currNumber);
 
+                // 와이파이 첫 스캔이라면 성공으로 표시
+                if (!isWifiScanSuccessFirst) {
+                    // 카메라 내 위치로 옮기기
+                    setCameraToMe();
+                    isWifiScanSuccessFirst = true;
+                    onWifiScanSuccessFirstListener.onWifiScanSuccess();
+                }
+
                 // 최신 층 업데이트
                 lastFloor = currFloor;
-                invalidateIndoor();
+                if (IndoorMapView.getOnPositionChangeListener() != null) {
+                    IndoorMapView.getOnPositionChangeListener().OnPositionChange();
+                }
             });
         });
+
     }
 
     public void stopIndoorGuide() {
@@ -161,7 +183,12 @@ public class IndoorMap {
     }
 
     private void moveMeCoord(int buildingId, int floor, int number) {
-        Coord newCoord = BuildingInfo.findBuildingInfo(buildingId).coordByNumber[floor].get(number);
+        Coord currCoord = IndoorMapView.getMeCoord();
+        Coord newCoord =
+                BuildingInfo
+                        .findBuildingInfo(buildingId)
+                        .coordByNumber[floor]
+                        .getOrDefault(number, currCoord);
         IndoorMapView.setMeCoord(newCoord);
     }
 
@@ -185,6 +212,7 @@ public class IndoorMap {
         // 실내 안내 모드가 꺼지면 종료
         if (!canWifiScan) return;
         wifiHelper.scanWifi((scanResults) -> {
+            Log.d("minsang", "테스트");
             // 스캔에 성공하면
             // 와이파이 스캔 결과를 Signal로 매핑
             List<Signal> newSignals = new ArrayList<>();

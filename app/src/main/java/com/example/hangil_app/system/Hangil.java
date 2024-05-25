@@ -25,13 +25,16 @@ public class Hangil {
     public static final String START_NODE_NUMBER = "hangil.protocol.start.node.number";
     public static final String START_NODE_ID = "hangil.protocol.start.node.id";
     public static final String START_NODE_NAME = "hangil.protocol.start.node.name";
+    public static final String START_NODE_DESC = "hangil.protocol.start.node.desc";
 
     public static final String END_NODE_FLOOR = "hangil.protocol.end.node.floor";
     public static final String END_NODE_NUMBER = "hangil.protocol.end.node.number";
     public static final String END_NODE_ID = "hangil.protocol.end.node.id";
     public static final String END_NODE_NAME = "hangil.protocol.end.node.name";
+    public static final String END_NODE_DESC = "hangil.protocol.end.node.desc";
 
     public static final String BUILDING_ID = "hangil.protocol.building.id";
+    public static final String BUILDING_NAME = "hangil.protocol.building.name";
     public static final String GUIDE_TYPE = "hangil.protocol.guide.type";
     public static final String INDOOR_GUIDE = "hangil.protocol.indoor.guide";
     public static final String OUTDOOR_GUIDE = "hangil.protocol.outdoor.guide";
