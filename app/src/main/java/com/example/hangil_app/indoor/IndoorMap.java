@@ -125,10 +125,13 @@ public class IndoorMap {
                 // 내 위치 조정
                 moveMeCoord(buildingId, currFloor, currNumber);
 
+                // 카메라 위치 조정
+                setCameraToMe();
+
                 // 와이파이 첫 스캔이라면 성공으로 표시
                 if (!isWifiScanSuccessFirst) {
                     // 카메라 내 위치로 옮기기
-                    setCameraToMe();
+//                    setCameraToMe();
                     isWifiScanSuccessFirst = true;
                     onWifiScanSuccessFirstListener.onWifiScanSuccess();
                 }
