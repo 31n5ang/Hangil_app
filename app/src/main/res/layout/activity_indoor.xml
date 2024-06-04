@@ -152,4 +152,33 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Button
+        android:id="@+id/myIndoorLocBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="내 위치"
+        app:layout_constraintBottom_toTopOf="@+id/goOutdoorBtn"
+        app:layout_constraintEnd_toEndOf="@+id/goOutdoorBtn"
+        app:layout_constraintStart_toStartOf="@+id/goOutdoorBtn" />
+
+    <ToggleButton
+        android:id="@+id/myTrackingModeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="위치 고정"
+        app:layout_constraintBottom_toTopOf="@+id/myIndoorLocBtn"
+        app:layout_constraintEnd_toEndOf="@+id/myIndoorLocBtn"
+        app:layout_constraintStart_toStartOf="@+id/myIndoorLocBtn" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="위치 고정"
+        app:layout_constraintBottom_toTopOf="@+id/myTrackingModeBtn"
+        app:layout_constraintEnd_toEndOf="@+id/myTrackingModeBtn"
+        app:layout_constraintStart_toStartOf="@+id/myTrackingModeBtn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

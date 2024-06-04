@@ -43,6 +43,11 @@ public class IndoorMap {
     private int lastFloor = NONE;
     private boolean isWifiScanSuccessFirst = false;
     private boolean isStair = false;
+    private boolean isTrackingMode = false;
+    @Getter
+    private static OnTrackingModeChangeListener onTrackingModeChangeListener;
+    @Getter
+    private static OnMyLocBtnListener onMyLocBtnListener;
     public static IndoorMap getInstance(Context context, IndoorMapView indoorMapView,
                                         float screenWidth,
                                         float screenHeight) {
@@ -61,9 +66,27 @@ public class IndoorMap {
         wifiHelper = WifiHelper.getInstance(context);
         dataManager = DataManager.getInstance(API_URL);
         init();
+
+        onTrackingModeChangeListener = (isMode -> {
+           if (isMode) {
+               isTrackingMode = true;
+           } else {
+               isTrackingMode = false;
+           }
+        });
+
+        onMyLocBtnListener = () -> {
+            setCameraToMe();
+            if (IndoorMapView.getOnPositionChangeListener() != null) {
+                IndoorMapView.getOnPositionChangeListener().OnPositionChange();
+            }
+        };
     }
     public void startIndoorGuide(StartEndNode startEndNode, OnWifiScanSuccessFirstListener onWifiScanSuccessFirstListener) {
         invalidateIndoor();
+//        onWifiScanSuccessFirstListener.onWifiScanSuccess();
+//        updateBackground(1, 1);
+//        if (1==1) return;
 
         // 와이파이 스캔 첫 성공 대기상태로 표시
         isWifiScanSuccessFirst = false;
@@ -126,12 +149,14 @@ public class IndoorMap {
                 moveMeCoord(buildingId, currFloor, currNumber);
 
                 // 카메라 위치 조정
-                setCameraToMe();
+                if (isTrackingMode) {
+                    setCameraToMe();
+                }
 
                 // 와이파이 첫 스캔이라면 성공으로 표시
                 if (!isWifiScanSuccessFirst) {
                     // 카메라 내 위치로 옮기기
-//                    setCameraToMe();
+                    setCameraToMe();
                     isWifiScanSuccessFirst = true;
                     onWifiScanSuccessFirstListener.onWifiScanSuccess();
                 }

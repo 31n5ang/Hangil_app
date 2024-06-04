@@ -27,9 +27,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -55,6 +57,8 @@ public class IndoorActivity extends AppCompatActivity {
     private Button goOutdoorBtn;
     private IndoorMap indoorMap;
     private TextView stairText;
+    private Button myIndoorLocBtn;
+    private ToggleButton myTrackingModeBtn;
     private ConstraintLayout stairForm;
     private int buildingId;
     private String buildingName;
@@ -89,9 +93,22 @@ public class IndoorActivity extends AppCompatActivity {
         goOutdoorBtn = findViewById(R.id.goOutdoorBtn);
         stairText = findViewById(R.id.stairText);
         stairForm = findViewById(R.id.stairForm);
+        myIndoorLocBtn = findViewById(R.id.myIndoorLocBtn);
+        myTrackingModeBtn = findViewById(R.id.myTrackingModeBtn);
 
         progressSpin = new ProgressSpin(this);
         initExtras();
+
+        myTrackingModeBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                IndoorMap.getOnTrackingModeChangeListener().onTrackingMode(isChecked);
+            }
+        });
+
+        myIndoorLocBtn.setOnClickListener((event) -> {
+            IndoorMap.getOnMyLocBtnListener().onMyLocBtn();
+        });
 
         // 계단일 때 콜백 처리
         stairText.setText(String.format("계단을 오르내리는 중 입니다..\n%s층으로 향해주세요!", endRoomData.getNode().getFloor()));
